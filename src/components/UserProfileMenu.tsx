@@ -43,6 +43,7 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
   const [langOpen, setLangOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [accountStatus, setAccountStatus] = useState<AccountStatus>('standard');
+
   const [avatarError, setAvatarError] = useState(false);
   const [storedAccess, setStoredAccess] = useState(() => readStoredUserAccess());
   const menuRef = useRef<HTMLDivElement>(null);
