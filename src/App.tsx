@@ -624,14 +624,14 @@ function App() {
       betterSocket.connect().catch((err) => console.warn('Better socket unavailable:', err.message));
 
       // 1d. Silent auto-map currencies (non-blocking, admin-only — fails silently for non-admins)
-      autoMapCurrencies(false).catch(() => {});
+      autoMapCurrencies(false).catch(() => { });
 
       // 1f. Load bot_username from profile (non-blocking)
       getMyProfile()
         .then((profile) => {
           persistUserAccess(profile);
         })
-        .catch(() => {});
+        .catch(() => { });
 
       // 1e. Load accounts via batch trading endpoint (non-blocking)
       batchTrading().then((tradingData) => {
@@ -1252,9 +1252,9 @@ function App() {
           title={t.dragMode}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/>
-            <polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/>
-            <line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>
+            <polyline points="5 9 2 12 5 15" /><polyline points="9 5 12 2 15 5" />
+            <polyline points="15 19 12 22 9 19" /><polyline points="19 9 22 12 19 15" />
+            <line x1="2" y1="12" x2="22" y2="12" /><line x1="12" y1="2" x2="12" y2="22" />
           </svg>
         </button>
 
@@ -1487,6 +1487,48 @@ function HeaderLayoutPicker({ layout, onLayoutChange, isMobile, autoScrollCandle
   );
 }
 
+// Dynamic border-radius for merged cells in layout icons
+function getAreaBounds(icon: number[][], value: number) {
+  const rows = icon.length;
+  const cols = icon[0].length;
+
+  let minX = cols, maxX = -1, minY = rows, maxY = -1;
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (icon[y][x] === value) {
+        minX = Math.min(minX, x);
+        maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+
+  return { minX, maxX, minY, maxY };
+}
+
+function getAreaRadius(icon: number[][], value: number, r = 4) {
+  const { minX, maxX, minY, maxY } = getAreaBounds(icon, value);
+
+  const rows = icon.length;
+  const cols = icon[0].length;
+
+  return {
+    borderTopLeftRadius:
+      minY === 0 && minX === 0 ? r : 0,
+
+    borderTopRightRadius:
+      minY === 0 && maxX === cols - 1 ? r : 0,
+
+    borderBottomLeftRadius:
+      maxY === rows - 1 && minX === 0 ? r : 0,
+
+    borderBottomRightRadius:
+      maxY === rows - 1 && maxX === cols - 1 ? r : 0,
+  };
+}
+
 /* \u2500\u2500\u2500 Layout icon mini-component \u2500\u2500\u2500 */
 function LayoutIcon({ icon }: { icon: number[][] }) {
   const rows = icon.length;
@@ -1494,9 +1536,11 @@ function LayoutIcon({ icon }: { icon: number[][] }) {
 
   // Build grid-template-areas from number grid (same number = merged cell)
   const areaLetters = 'abcdefghijklmnop';
-  const areasStr = icon.map(
-    (row) => `"${row.map((n) => areaLetters[n - 1] || 'z').join(' ')}"`
-  ).join(' ');
+  const areasStr = icon
+    .map((row) =>
+      `"${row.map((n) => areaLetters[n - 1] || 'z').join(' ')}"`
+    )
+    .join(' ');
 
   // Collect unique slot numbers to render one div per slot
   const uniqueSlots = [...new Set(icon.flat())].sort((a, b) => a - b);
@@ -1514,9 +1558,22 @@ function LayoutIcon({ icon }: { icon: number[][] }) {
         <div
           key={n}
           className="layout-icon__cell"
-          style={{ gridArea: areaLetters[n - 1] }}
+          style={{
+            gridArea: areaLetters[n - 1],
+            ...getAreaRadius(icon, n),
+          }}
         />
       ))}
+
+      {/* {icon.map((row, y) =>
+        row.map((_, x) => (
+          <div
+            key={`${y}-${x}`}
+            className="layout-icon__cell"
+            style={getCellRadius(icon, y, x)}
+          />
+        ))
+      )} */}
     </div>
   );
 }

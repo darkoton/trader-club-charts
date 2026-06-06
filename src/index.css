@@ -11,6 +11,7 @@
 
 :root {
   /* ─── Palette ─── */
+  --white: #fff;
   --bg-primary: #0b0e17;
   --bg-secondary: #141722;
   --bg-card: #1b1e2e;
@@ -28,7 +29,6 @@
 
   --danger: #f6465d;
   --danger-muted: rgba(246, 70, 93, 0.15);
-
   --text-primary: #eaecef;
   --text-secondary: #848e9c;
   --text-muted: #5e6673;
