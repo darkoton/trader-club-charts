@@ -1,0 +1,2471 @@
+/* ===============================================================
+ * PO Terminal — public marketing pages
+ *
+ * Design tokens live at :root (prefixed with --page- so they don't
+ * conflict with the legacy terminal tokens in src/index.css /
+ * src/App.css). Utility classes that should only apply to marketing
+ * pages stay scoped under `.po-pages`.
+ *
+ * Colors are stored as space-separated RGB channels so that
+ * Tailwind opacity modifiers (e.g. `bg-accent/20`) work:
+ *   rgb(var(--page-accent) / <alpha-value>)
+ * =============================================================== */
+
+/* ─── Body base ─── */
+html {
+  background-color: #070707 !important;
+  scroll-padding-top: 8.75rem;
+  /* Disable "rubber-band" bounce scroll on macOS Safari, iOS Safari and
+     Chrome/Edge. Keeps decorative fixed blurs anchored and prevents
+     the page fx from sliding past the viewport edges. */
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
+body,
+#root {
+  overflow: clip;
+  overscroll-behavior: none;
+}
+
+.po-pages {
+  overscroll-behavior: none;
+}
+
+.po-pages--auth {
+  background:
+    radial-gradient(58rem 34rem at 50% -6rem, rgb(128 178 255 / 0.18), transparent 62%),
+    linear-gradient(180deg, #09101d 0%, #07090f 24%, #070707 60%, #070707 100%);
+}
+
+.po-pages--auth::before {
+  opacity: 0.18;
+  background-size: 56rem auto;
+  background-position: top center;
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.75) 0%, rgb(0 0 0 / 0.24) 48%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.75) 0%, rgb(0 0 0 / 0.24) 48%, transparent 100%);
+}
+
+.po-pages--auth::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(36rem 24rem at 50% 10rem, rgb(128 178 255 / 0.12), transparent 72%),
+    linear-gradient(180deg, rgb(7 7 7 / 0) 0%, rgb(7 7 7 / 0.2) 38%, rgb(7 7 7 / 0.62) 74%, #070707 100%);
+}
+
+/* ─── Fonts ─── */
+.po-pages {
+  font-family: "Montserrat", sans-serif;
+}
+
+.po-pages h1,
+.po-pages h2,
+.po-pages h3,
+.po-pages h4,
+.po-pages h5,
+.po-pages h6 {
+  font-family: "Unbounded", sans-serif;
+}
+
+:root {
+  /* ─── Background palette ─── */
+  --page-bg: 7 7 7; /* #070707 */
+  --page-bg-secondary: 7 7 7; /* #070707 */
+  --page-card: 14 14 14; /* #0e0e0e */
+  --page-card-hover: 16 18 30; /* #10121e */
+  --page-elevated: 20 23 34; /* #141722 */
+  --page-input-bg: 10 10 10; /* #0a0a0a */
+
+  /* ─── Borders ─── */
+  --page-border: 255 255 255;
+  --page-border-accent: 128 178 255;
+
+  /* ─── Primary accent — brand blue #80B2FF ─── */
+  --page-accent: 128 178 255;
+  --page-accent-hover: 194 218 255; /* #C2DAFF */
+  --page-accent-contrast: 11 26 51;
+
+  /* ─── Status ─── */
+  --page-danger: 255 90 120;
+}
+
+/* ---------------------------------------------------------------
+ * Base resets (scoped).
+ * --------------------------------------------------------------- */
+
+.po-pages ul,
+.po-pages ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.po-pages .po-content ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.po-pages .po-content ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+
+.po-pages .po-content ul li::marker,
+.po-pages .po-content ol li::marker {
+  color: rgb(var(--page-accent));
+}
+
+.po-pages input,
+.po-pages textarea,
+.po-pages select,
+.po-pages button {
+  font-family: inherit;
+}
+
+.po-pages button:focus-visible,
+.po-pages a:focus-visible {
+  outline: 2px solid rgb(var(--page-accent));
+  outline-offset: 2px;
+}
+
+.po-pages input,
+.po-pages textarea,
+.po-pages select {
+  outline: none !important;
+  border: none;
+}
+.po-pages input:focus,
+.po-pages input:focus-visible,
+.po-pages textarea:focus,
+.po-pages textarea:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ---------------------------------------------------------------
+ * Unified hover/state duration — 300ms across the marketing pages.
+ * Tailwind's default transition-* duration is 150ms; the rules below
+ * bump every `transition-colors` / `transition-all` element up to
+ * 300ms so all interactive states feel consistent. Reveal and other
+ * decorative animations that already declare their own duration via
+ * the `transition:` shorthand are not affected.
+ * --------------------------------------------------------------- */
+.po-pages .transition-colors,
+.po-pages .transition-all,
+.po-pages .transition {
+  transition-duration: 300ms;
+}
+
+/* ---------------------------------------------------------------
+ * Decorative utilities used across marketing pages.
+ * --------------------------------------------------------------- */
+
+/* Underline accent for section headings — uses /img/line.svg. */
+.po-underline {
+  position: relative;
+  display: inline-block;
+  color: rgb(var(--page-accent));
+}
+.po-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.5rem;
+  height: 0.6875rem;
+  margin-top: 3px;
+  background: url("/img/line.svg") no-repeat center;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------
+ * Page-wide dotted/lined backdrop (used on HomePage).
+ * The asset is rendered via two stacked layers:
+ *   1) the raw PNG, repeated horizontally and along the page;
+ *   2) a top-to-bottom fade so the pattern dissolves into the
+ *      background instead of having a hard edge.
+ * --------------------------------------------------------------- */
+.po-pages::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/img/bg/dots_lines.webp");
+  background-repeat: repeat;
+  background-size: 100% auto;
+  background-position: top center;
+}
+
+@media (max-width: 64rem) {
+  .po-pages::before {
+    background-size: 1000px auto;
+  }
+}
+
+/* ---------------------------------------------------------------
+ * Device cards — "На Любом Устройстве" section.
+ * Composed from: dark surface, two accent glows, a 5-row
+ * "PO Terminal" watermark, a label and the device PNG
+ * (rendered in React).
+ *
+ * Responsive: min-height and watermark font scale down on
+ * narrow viewports; glows shrink so they don't wash out the card.
+ * --------------------------------------------------------------- */
+.po-device-card {
+  background-color: #0a0a0a;
+  isolation: isolate;
+  min-height: 19.5rem;
+  border-color: transparent;
+  transition: border-color 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+@media (min-width: 40rem) {
+  .po-device-card {
+    min-height: 22.5rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .po-device-card {
+    min-height: 26.5rem;
+  }
+}
+
+/* Repeating "PO Terminal" watermark — 5 rows, clipped to the card. */
+.po-device-card__watermark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: "Unbounded", sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  z-index: 1;
+}
+
+@media (max-width: 23.75rem) {
+  .po-device-card__watermark {
+    gap: 0.5rem;
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 40rem) {
+  .po-device-card__watermark {
+    gap: 1.125rem;
+    font-size: 4rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .po-device-card__watermark {
+    gap: 1.5rem;
+    font-size: 6rem;
+  }
+}
+
+/* Accent radial glows — two of them (top-left, bottom-right).
+ * On desktop: 362×362 / blur 180. Scaled down on mobile so the
+ * card doesn't get washed out by the blue wash. */
+.po-device-card__glow {
+  position: absolute;
+  width: 13.75rem;
+  height: 13.75rem;
+  background: #80b2ff;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (min-width: 64rem) {
+  .po-device-card__glow {
+    width: 22.625rem;
+    height: 22.625rem;
+    filter: blur(180px);
+  }
+}
+
+.po-device-card__glow--tl {
+  top: -6.25rem;
+  left: -6.25rem;
+}
+
+.po-device-card__glow--br {
+  bottom: -6.25rem;
+  right: -6.25rem;
+}
+
+@media (min-width: 64rem) {
+  .po-device-card__glow--tl {
+    top: -10.75rem;
+    left: -11.375rem;
+  }
+  .po-device-card__glow--br {
+    bottom: -11.375rem;
+    right: -10.75rem;
+  }
+}
+
+/* Security section — smaller, softer glows than the device cards.
+ * Offsets are tighter so the blue wash stays close to the corners
+ * of each 274×338 card instead of blasting across it. */
+.po-security-card .po-device-card__glow {
+  width: 11.25rem;
+  height: 11.25rem;
+  filter: blur(90px);
+}
+.po-security-card .po-device-card__glow--tl {
+  top: -5rem;
+  left: -5.625rem;
+}
+.po-security-card .po-device-card__glow--br {
+  bottom: -5.625rem;
+  right: -6.25rem;
+}
+
+@media (min-width: 64rem) {
+  .po-security-card .po-device-card__glow {
+    width: 15rem;
+    height: 15rem;
+    filter: blur(120px);
+  }
+  .po-security-card .po-device-card__glow--tl {
+    top: -7.5rem;
+    left: -8.75rem;
+  }
+  .po-security-card .po-device-card__glow--br {
+    bottom: -8.75rem;
+    right: -10rem;
+  }
+}
+
+@media (min-width: 120rem) {
+  .po-security-card .po-device-card__glow {
+    width: 22.625rem;
+    height: 22.625rem;
+    filter: blur(180px);
+  }
+  .po-security-card .po-device-card__glow--tl {
+    top: -14.375rem;
+    left: -18.125rem;
+  }
+  .po-security-card .po-device-card__glow--br {
+    bottom: -18.125rem;
+    right: -20rem;
+  }
+}
+
+/* Security section — glass cards sit on top of two accent glows. */
+.po-security-card {
+  background: rgba(29, 29, 29, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  isolation: isolate;
+  border-color: transparent;
+  transition: border-color 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/* Unified card hover — features / devices / security.
+ * Default: transparent border. Hover: accent tint. Smooth transition.
+ * No box-shadow, no transform — border-only state change. */
+.po-feature-card,
+.po-device-card,
+.po-security-card {
+  border-color: transparent !important;
+}
+
+.po-feature-card:hover,
+.po-device-card:hover,
+.po-security-card:hover {
+  border-color: rgba(128, 178, 255, 0.55) !important;
+}
+
+/* Security section — hide the native scrollbar on the mobile
+ * horizontal snap carousel so it looks like the Figma mock. */
+.po-security-cards,
+.po-device-cards,
+.po-features-grid {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-padding-left: 1rem;
+}
+.po-security-cards::-webkit-scrollbar,
+.po-device-cards::-webkit-scrollbar,
+.po-features-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Active TOC link. */
+.po-toc-link--active {
+  background: rgb(var(--page-accent) / 0.1);
+  color: rgb(var(--page-accent)) !important;
+}
+
+/* ---------------------------------------------------------------
+ * react-toastify theme overrides
+ * --------------------------------------------------------------- */
+
+.po-pages .Toastify__toast {
+  background: rgb(var(--page-card));
+  color: #fff;
+  border: 1px solid rgb(var(--page-border) / 0.08);
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.po-pages .Toastify__toast--success {
+  border-color: rgb(var(--page-accent) / 0.35);
+}
+
+.po-pages .Toastify__toast--error {
+  border-color: rgb(var(--page-danger) / 0.35);
+}
+
+.po-pages .Toastify__progress-bar {
+  background: rgb(var(--page-accent));
+}
+
+/* ---------------------------------------------------------------
+ * Feature cards — noise texture overlay.
+ * Sits above the solid background but below text/visuals.
+ * --------------------------------------------------------------- */
+.po-feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/img/features/noise.webp");
+  background-repeat: repeat;
+  background-size: 220px;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+/* Feature cards — subtler glows (tighter than device cards so the
+ * bento grid doesn't look like a blue wash). */
+.po-feature-card .po-device-card__glow {
+  width: 11rem;
+  height: 11rem;
+  filter: blur(90px);
+  opacity: 0.55;
+  z-index: 0;
+}
+.po-feature-card .po-device-card__glow--tl {
+  top: -5rem;
+  left: -5rem;
+}
+.po-feature-card .po-device-card__glow--br {
+  bottom: -5rem;
+  right: -5rem;
+}
+@media (min-width: 64rem) {
+  .po-feature-card .po-device-card__glow {
+    width: 16rem;
+    height: 16rem;
+    filter: blur(130px);
+  }
+  .po-feature-card .po-device-card__glow--tl {
+    top: -8rem;
+    left: -9rem;
+  }
+  .po-feature-card .po-device-card__glow--br {
+    bottom: -8rem;
+    right: -9rem;
+  }
+}
+
+/* Feature card — border hover + subtle lift. */
+.po-feature-card {
+  transition:
+    border-color 0.3s cubic-bezier(0.2, 0.8, 0.3, 1),
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.po-feature-card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 1.25rem 2.5rem -0.75rem rgba(128, 178, 255, 0.18);
+}
+
+/* Mobile: tone glows down by ~20% via wrapper opacity. */
+.po-card-glow {
+  opacity: var(--po-glow-opacity, 1);
+}
+@media (max-width: 63.9375rem) {
+  .po-card-glow {
+    opacity: calc(var(--po-glow-opacity, 1) * 0.8);
+  }
+  .po-anim .po-card-glow {
+    animation: po-card-glow-pulse-mobile 6s ease-in-out infinite;
+  }
+  @keyframes po-card-glow-pulse-mobile {
+    0%,
+    100% {
+      opacity: calc(var(--po-glow-opacity, 1) * 0.8);
+    }
+    50% {
+      opacity: calc(var(--po-glow-opacity, 1) * 0.56);
+    }
+  }
+}
+
+/* Soft breathing pulse for card glow blobs. Uses ONLY opacity
+   (never `filter`) — inline `filter: blur(...)` on the glow span
+   must not be overridden by the animation. */
+@keyframes po-card-glow-pulse {
+  0%,
+  100% {
+    opacity: var(--po-glow-opacity, 1);
+  }
+  50% {
+    opacity: calc(var(--po-glow-opacity, 1) * 0.7);
+  }
+}
+.po-anim .po-card-glow {
+  animation: po-card-glow-pulse 6s ease-in-out infinite;
+  will-change: opacity;
+}
+.po-anim .po-card-glow:nth-of-type(2) {
+  animation-delay: -2s;
+  animation-duration: 7.5s;
+}
+.po-anim .po-card-glow:nth-of-type(3) {
+  animation-delay: -4s;
+  animation-duration: 8.5s;
+}
+
+/* Inline SVG charts — animate only VISIBLE candle <rect>s (those
+   inside `<g clip-path="url(#clipN…)">` groups), never the mask
+   rect or the rects inside `<defs><clipPath>…</clipPath></defs>`.
+   The SVG itself is never transformed, so the graph never "jumps". */
+.po-chart {
+  border-radius: 0.75rem;
+  opacity: 0.95;
+}
+.po-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Each candle group contains 1-2 rects (wick + body). We target the
+   group itself with a tiny scale/translate so both rects move in sync
+   and stay perfectly aligned. */
+.po-chart svg g[clip-path] {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: po-candle-grow 4.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes po-candle-grow {
+  0%,
+  100% {
+    transform: scaleY(0.94) translateY(2px);
+    opacity: 0.86;
+  }
+  50% {
+    transform: scaleY(1.05) translateY(-2px);
+    opacity: 1;
+  }
+}
+
+/* Stagger candles in 8 phases so the motion reads as a slow wave
+   travelling left → right across the chart, never uniform jitter. */
+.po-chart svg g[clip-path]:nth-of-type(8n + 1) {
+  animation-delay: 0s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 2) {
+  animation-delay: -0.55s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 3) {
+  animation-delay: -1.1s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 4) {
+  animation-delay: -1.65s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 5) {
+  animation-delay: -2.2s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 6) {
+  animation-delay: -2.75s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 7) {
+  animation-delay: -3.3s;
+}
+.po-chart svg g[clip-path]:nth-of-type(8n + 8) {
+  animation-delay: -3.85s;
+}
+
+/* MA / trend lines — slow dashed drift. */
+@keyframes po-chart-line-drift {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -40;
+    opacity: 0.85;
+  }
+}
+.po-anim .po-chart svg path[stroke] {
+  stroke-dasharray: 6 8;
+  animation: po-chart-line-drift 10s linear infinite;
+  will-change: stroke-dashoffset, opacity;
+}
+
+/* Variant B (Торговые Стратегии) — solid trend lines, no dashes.
+ * A very subtle glow + opacity pulse so they feel alive but never
+ * pull the eye away from the candles. */
+.po-anim .po-chart--b svg path[stroke] {
+  stroke-dasharray: none;
+  animation: po-chart-line-pulse 5s ease-in-out infinite;
+  will-change: opacity, filter, stroke-width;
+}
+.po-anim .po-chart--b svg path[stroke]:nth-of-type(2) {
+  animation-delay: -2.5s;
+}
+@keyframes po-chart-line-pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 0 transparent);
+    stroke-width: 2;
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px currentColor);
+    stroke-width: 2.4;
+  }
+}
+
+/* Per-variant breathing glow around the whole SVG — very soft. */
+@keyframes po-chart-tint-a {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    filter: drop-shadow(0 4px 18px rgba(128, 255, 204, 0.12));
+  }
+}
+@keyframes po-chart-tint-b {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    filter: drop-shadow(0 6px 22px rgba(128, 178, 255, 0.14));
+  }
+}
+@keyframes po-chart-tint-c {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    filter: drop-shadow(0 4px 18px rgba(128, 178, 255, 0.14));
+  }
+}
+.po-anim .po-chart--a svg {
+  animation: po-chart-tint-a 7s ease-in-out infinite;
+}
+.po-anim .po-chart--b svg {
+  animation: po-chart-tint-b 9s ease-in-out infinite;
+}
+.po-anim .po-chart--c svg {
+  animation: po-chart-tint-c 8s ease-in-out infinite;
+}
+
+.po-chart--c {
+  padding-bottom: 50px;
+}
+
+.po-chart--b {
+  padding-bottom: 60px;
+}
+
+/* Disable candle motion entirely when the user prefers reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .po-chart svg g[clip-path],
+  .po-anim .po-chart svg path[stroke],
+  .po-anim .po-chart--a svg,
+  .po-anim .po-chart--b svg,
+  .po-anim .po-chart--c svg {
+    animation: none !important;
+  }
+}
+
+/* Noise overlay above visuals, below title/desc (which live on z-20). */
+.po-feature-card__noise {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: url("/img/features/noise.webp");
+  background-repeat: repeat;
+  background-size: 200px;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+/* Corner icon — neon flash glow on Роботы card. */
+.po-feature-card__corner {
+  filter: drop-shadow(0 0 12px rgba(128, 178, 255, 0.65));
+}
+@keyframes po-corner-flicker {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(128, 178, 255, 0.4));
+    transform: translateY(0);
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(128, 178, 255, 0.9));
+    transform: translateY(-2px);
+  }
+}
+.po-anim .po-feature-card__corner {
+  animation: po-corner-flicker 3.2s ease-in-out infinite;
+}
+
+/* BTC Buy Signal — progress bar fill. Calm, wide-range sweep. */
+.po-signal-bar__fill {
+  width: 8%;
+}
+@keyframes po-signal-bar {
+  0%,
+  100% {
+    width: 12%;
+  }
+  50% {
+    width: 78%;
+  }
+}
+.po-anim .po-signal-bar__fill {
+  animation: po-signal-bar 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Flash icon pinned to the top-right of the BTC Buy Signal pill. */
+.po-signal-pill__flash {
+  filter: drop-shadow(0 0 10px rgba(128, 178, 255, 0.55));
+}
+@keyframes po-signal-flash {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(128, 178, 255, 0.35));
+    opacity: 0.85;
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(128, 178, 255, 0.85));
+    opacity: 1;
+  }
+}
+.po-anim .po-signal-pill__flash {
+  animation: po-signal-flash 3.6s ease-in-out infinite;
+}
+
+/* Demo Account — subtle number pulse. */
+@keyframes po-demo-pulse {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(128, 178, 255, 0);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(128, 178, 255, 0.55);
+  }
+}
+.po-anim .po-demo-amount {
+  animation: po-demo-pulse 3.6s ease-in-out infinite;
+}
+
+/* Мульти Язычность — flags sit UNDER map.webp overlay. No shadow. */
+.po-lang-flag {
+  filter: none;
+}
+.po-lang-map-wrap {
+  pointer-events: none;
+}
+.po-lang-map {
+  opacity: 1;
+  mix-blend-mode: normal;
+  pointer-events: none;
+}
+
+/* Flash icon on the Signals pill — pulses & glows softly so it reads
+   as "live signal". Positioned slightly outside the pill's top-right. */
+.po-signal-pill__flash {
+  background: radial-gradient(
+    circle at center,
+    rgba(128, 178, 255, 0.25) 0%,
+    rgba(128, 178, 255, 0) 70%
+  );
+}
+.po-anim .po-flash-pulse {
+  animation: po-flash-pulse 1.8s ease-in-out infinite;
+}
+@keyframes po-flash-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(128, 178, 255, 0));
+  }
+  50% {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 10px rgba(128, 178, 255, 0.7));
+  }
+}
+@keyframes po-flag-float-a {
+  0%,
+  100% {
+    transform: translateY(0) rotate(6deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(3deg);
+  }
+}
+@keyframes po-flag-float-b {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-6deg);
+  }
+}
+@keyframes po-flag-float-c {
+  0%,
+  100% {
+    transform: translateY(0) rotate(14deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(10deg);
+  }
+}
+.po-anim .po-lang-flag--gb {
+  animation: po-flag-float-a 5.4s ease-in-out infinite;
+}
+.po-anim .po-lang-flag--br {
+  animation: po-flag-float-b 6.3s ease-in-out -2s infinite;
+}
+.po-anim .po-lang-flag--nl {
+  animation: po-flag-float-c 7.2s ease-in-out -4s infinite;
+}
+
+/* "Дневник Трейдера" mini-table. */
+.po-journal {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.po-journal__kpi {
+  filter: drop-shadow(0 0.5rem 1.5rem rgba(128, 255, 178, 0.45))
+    drop-shadow(0 0 1.25rem rgba(128, 255, 178, 0.35));
+}
+@keyframes po-kpi-glow-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0.5rem 1.5rem rgba(128, 255, 178, 0.45))
+      drop-shadow(0 0 1.25rem rgba(128, 255, 178, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0.5rem 2rem rgba(128, 255, 178, 0.65))
+      drop-shadow(0 0 2rem rgba(128, 255, 178, 0.55));
+  }
+}
+.po-anim .po-journal__kpi {
+  animation: po-kpi-glow-pulse 3.2s ease-in-out infinite;
+}
+@keyframes po-kpi-spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.po-anim .po-journal__kpi > img {
+  animation: po-kpi-spin 20s linear infinite;
+}
+
+/* Journal BUY/SELL badges — soft independent pulses. */
+@keyframes po-journal-badge-buy {
+  0%,
+  100% {
+    background-color: rgba(128, 178, 255, 0.2);
+  }
+  50% {
+    background-color: rgba(128, 178, 255, 0.36);
+  }
+}
+@keyframes po-journal-badge-sell {
+  0%,
+  100% {
+    background-color: rgba(255, 107, 107, 0.2);
+  }
+  50% {
+    background-color: rgba(255, 107, 107, 0.36);
+  }
+}
+.po-anim .po-journal__badge--buy {
+  animation: po-journal-badge-buy 4.2s ease-in-out infinite;
+}
+.po-anim .po-journal__badge--sell {
+  animation: po-journal-badge-sell 4.2s ease-in-out -2.1s infinite;
+}
+
+/* ───── Автоматические Роботы — Auto Buy / Auto Sell speech-bubble
+ * badges LIVE INSIDE the SVG (`graph-3.svg`) and are rendered as-is.
+ * No per-layer animation — the chart layers themselves already carry
+ * the design. */
+
+/* ---------------------------------------------------------------
+ * Buttons — shared active-state gradients.
+ * `.po-btn-*` classes are attached by `Button.tsx` to participate
+ * in the CSS-only :active layer on top of Tailwind classes.
+ *
+ * IMPORTANT: active gradient is applied via `background-image`
+ * (layered over the solid `background-color`) instead of the
+ * `background` shorthand — this prevents the button from briefly
+ * "flashing transparent" on mousedown in Chromium.
+ * --------------------------------------------------------------- */
+
+.po-pages .po-btn-primary,
+.po-pages .po-btn-secondary,
+.po-pages .po-btn-dark {
+  background-image: none;
+}
+
+/* Responsive button text size: 14px on mobile, 16px on tablets+. */
+.po-pages .po-btn-primary,
+.po-pages .po-btn-secondary,
+.po-pages .po-btn-dark,
+.po-pages .po-btn-ghost {
+  font-size: 0.875rem;
+}
+@media (min-width: 40rem) {
+  .po-pages .po-btn-primary,
+  .po-pages .po-btn-secondary,
+  .po-pages .po-btn-dark,
+  .po-pages .po-btn-ghost {
+    font-size: 1rem;
+  }
+}
+
+.po-pages .po-btn-primary:active:not(:disabled) {
+  background-image: linear-gradient(180deg, #c2daff 0%, #80b2ff 100%);
+}
+
+.po-pages .po-btn-dark:active:not(:disabled) {
+  background-image: linear-gradient(180deg, #282828 0%, #222222 100%);
+}
+
+.po-pages .po-btn-secondary {
+  border: 1px solid transparent;
+}
+.po-pages .po-btn-secondary:active:not(:disabled) {
+  background-color: #2b3749 !important;
+  border-color: #80b2ff3d !important;
+}
+
+/* ---------------------------------------------------------------
+ * Icon-only button (44×44, square, frosted).
+ * Used for pagination, navigation arrows, and "X" close chips.
+ * --------------------------------------------------------------- */
+
+.po-pages .po-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background-color: rgba(45, 45, 45, 0.4);
+  color: #c7c7c7;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.po-pages .po-icon-btn:hover:not(:disabled):not([aria-current="page"]) {
+  background-color: rgba(45, 45, 45, 0.72);
+  color: #ffffff;
+}
+
+.po-pages .po-icon-btn:active:not(:disabled),
+.po-pages .po-icon-btn[aria-current="page"],
+.po-pages .po-icon-btn.is-active {
+  background-color: #80b2ff;
+  color: #0b1a33;
+}
+
+.po-pages .po-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------
+ * Blog card — default / hover / active states.
+ * Matches Figma: radius 32, border 1px, padding 32, blur 8.
+ * --------------------------------------------------------------- */
+
+.po-pages .po-card-blog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 2rem;
+  border-radius: 2rem;
+  background-color: rgba(29, 29, 29, 0.4);
+  border: 1px solid transparent;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-decoration: none;
+  transition: border-color 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.po-pages a.po-card-blog:hover {
+  border-color: rgba(128, 178, 255, 0.55);
+}
+
+.po-pages a.po-card-blog:active,
+.po-pages .po-card-blog.is-active {
+  border-color: rgba(128, 178, 255, 0.55);
+}
+
+.po-pages .po-card-blog--row {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.po-pages .po-card-blog--row-reverse {
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------
+ * Links — header / footer state palette.
+ * --------------------------------------------------------------- */
+
+.po-pages .po-link-footer {
+  color: #696969;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.po-pages .po-link-footer:hover {
+  color: #ffffff;
+}
+.po-pages .po-link-footer.is-active,
+.po-pages .po-link-footer:active {
+  color: #80b2ff;
+}
+
+.po-pages .po-link-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #9d9d9d;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.po-pages .po-link-header:hover {
+  color: #ffffff;
+}
+.po-pages .po-link-header.is-active,
+.po-pages .po-link-header:active {
+  color: #80b2ff;
+}
+
+/* ---------------------------------------------------------------
+ * Disabled "#" links — opaque + non-interactive.
+ * Applied automatically by Button/FooterLinkEl helpers when
+ * the target is literally "#".
+ * --------------------------------------------------------------- */
+
+.po-pages .po-hash-disabled,
+.po-pages .po-hash-disabled * {
+  pointer-events: none;
+}
+.po-pages .po-hash-disabled {
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------
+ * Inputs — primary (auth/forms) vs search (blog) state palette.
+ *   • primary: #171717 / #1D1D1D / #171717
+ *   • search:  #101010 / #161616 / #101010
+ * On focus the placeholder fades out (opacity 0).
+ * --------------------------------------------------------------- */
+
+.po-pages .po-input {
+  transition: background-color 0.3s ease;
+}
+
+.po-pages .po-input::placeholder {
+  color: #6b7280;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.po-pages .po-input:focus::placeholder {
+  opacity: 0;
+}
+
+.po-pages .po-input-primary {
+  background-color: #171717;
+}
+.po-pages .po-input-primary:hover:not(:focus):not(:disabled) {
+  background-color: #1d1d1d;
+}
+.po-pages .po-input-primary:focus {
+  background-color: #171717;
+}
+
+.po-pages .po-input-search {
+  background-color: #101010;
+}
+.po-pages .po-input-search:hover:not(:focus):not(:disabled) {
+  background-color: #161616;
+}
+.po-pages .po-input-search:focus {
+  background-color: #101010;
+}
+
+/* ---------------------------------------------------------------
+ * Modal — centered dialog with rich fade + scale + spring animation.
+ * Rendered via a portal outside the `.po-pages` scope so the
+ * decorative dotted background doesn't bleed behind the modal.
+ * Scroll is locked on <html>/<body> while mounted (see Modal.tsx).
+ * --------------------------------------------------------------- */
+
+.po-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition:
+    background-color 0.32s ease,
+    backdrop-filter 0.32s ease,
+    -webkit-backdrop-filter 0.32s ease;
+  font-family: "Montserrat", sans-serif;
+}
+
+.po-modal-overlay[data-state="open"] {
+  background-color: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Card: drops in with spring, flies out with a slight lift. */
+@keyframes po-modal-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.88) rotateX(6deg);
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.015) rotateX(0deg);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+    filter: blur(0);
+  }
+}
+@keyframes po-modal-card-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.94);
+    filter: blur(4px);
+  }
+}
+
+.po-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  padding: 2rem;
+  background-color: #1d1d1d;
+  border-radius: 2rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  transform-origin: center;
+  will-change: opacity, transform, filter;
+  animation: po-modal-card-out 0.24s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.po-modal-card[data-state="open"] {
+  animation: po-modal-card-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.po-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+}
+
+.po-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 3rem;
+  margin: 0 0 1rem 0;
+  font-family: "Unbounded", sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+.po-modal-body {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: #9ca3af;
+}
+.po-modal-body p {
+  margin: 0;
+}
+
+.po-modal-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.po-modal-footer--column {
+  flex-direction: column;
+}
+
+/* ---------------------------------------------------------------
+ * Header pill & mobile drawer.
+ *
+ * Both the pill and drawer are *themselves* position: fixed elements
+ * (not descendants of a fixed/z-indexed ancestor). Nesting a
+ * backdrop-filter inside another fixed/z-indexed box creates a
+ * descendant stacking context in Chromium, which zeroes out the
+ * backdrop-image the filter can sample — so the blur visually
+ * disappears. Making each blur layer its own fixed root guarantees
+ * the filter correctly samples the scrolling page behind it.
+ *
+ * `.po-header-root` is the semantic <header> wrapper only — it has
+ * no position, no z-index, no transform, and no backdrop-root-
+ * creating properties (opacity<1, filter, mask, isolation, etc.).
+ * --------------------------------------------------------------- */
+
+.po-header-shell,
+.po-drawer-shell {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+.po-header-shell {
+  top: 0.75rem; /* 12px gap from viewport top on mobile */
+}
+
+@media (min-width: 64rem) {
+  .po-header-shell {
+    top: 1rem; /* 16px gap from viewport top on desktop */
+  }
+}
+
+/* Drawer sits right under the pill.
+   Mobile: 12 (top) + 68 (pill) + 12 (gap) = 92px.
+   Desktop keeps the original 110px. */
+.po-drawer-shell {
+  top: 5.75rem;
+  max-height: calc(100dvh - 7.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Keep the last item clear of the bottom edge when the user scrolls
+     the drawer contents. */
+  scroll-padding-bottom: 1.5rem;
+}
+
+.po-header-pill {
+  min-height: 4.25rem;
+}
+
+@media (min-width: 64rem) {
+  .po-drawer-shell {
+    top: 6.875rem;
+  }
+
+  .po-header-pill {
+    min-height: 5.125rem;
+  }
+}
+
+.po-header-pill,
+.po-drawer-pill {
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+}
+
+/* Header pill — use a dense surface so page cards do not bleed through. */
+.po-header-pill {
+  background-color: rgba(14, 16, 24, 0.96);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.32);
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .po-header-pill {
+    background-color: #0e1018;
+  }
+}
+
+/* Drawer pills stay visually aligned with the header. */
+.po-drawer-pill {
+  background-color: rgba(14, 16, 24, 0.94);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .po-drawer-pill {
+    background-color: #0e1018;
+  }
+}
+
+/* ---------------------------------------------------------------
+ * Mobile burger — animated icon crossfade + rotate.
+ * --------------------------------------------------------------- */
+
+.po-burger {
+  overflow: hidden;
+}
+
+.po-burger-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  transition:
+    opacity 0.22s ease,
+    transform 0.24s cubic-bezier(0.2, 0.8, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.po-burger-icon.is-visible {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.po-burger-icon.is-hidden {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.75);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------
+ * Mobile burger drawer — animated open/close.
+ *
+ * The animation targets the *children* of the drawer shell instead
+ * of the shell itself: opacity < 1 on the shell would establish a
+ * backdrop-root and blank out the drawer pills' blur while the
+ * animation runs. Animating each pill independently keeps the
+ * blur live the whole time.
+ *
+ * Open:  items slide down + scale up from a compressed state with
+ *        a spring easing and stagger.
+ * Close: snappy collapse up with slight inward scale + fade.
+ * --------------------------------------------------------------- */
+
+@keyframes po-mobile-menu-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.92);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(3px) scale(1.015);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes po-mobile-menu-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+    filter: blur(3px);
+  }
+}
+
+.po-mobile-menu > * {
+  transform-origin: top center;
+  will-change: opacity, transform, filter;
+}
+
+.po-mobile-menu.is-open > * {
+  animation: po-mobile-menu-in 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.po-mobile-menu.is-open > *:nth-child(1) {
+  animation-delay: 30ms;
+}
+.po-mobile-menu.is-open > *:nth-child(2) {
+  animation-delay: 110ms;
+}
+
+.po-mobile-menu.is-closing {
+  pointer-events: none;
+}
+.po-mobile-menu.is-closing > * {
+  animation: po-mobile-menu-out 0.22s cubic-bezier(0.4, 0, 1, 1) both;
+}
+.po-mobile-menu.is-closing > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+.po-mobile-menu.is-closing > *:nth-child(2) {
+  animation-delay: 0ms;
+}
+
+/* Transparent click-outside layer — no visual effect, purely for
+ * intercepting taps outside the drawer. */
+.po-mobile-backdrop {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* ---------------------------------------------------------------
+ * Header — subtle fade-in of the pill contents on mount. Applied
+ * to children of the pill (NOT the pill or any backdrop-filter
+ * layer) because opacity < 1 establishes a backdrop root and would
+ * kill the blur for the duration of the animation.
+ * --------------------------------------------------------------- */
+
+@keyframes po-header-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.po-anim .po-header-pill > *,
+.po-anim .po-drawer-pill > * {
+  animation: po-header-in 0.45s ease-out both;
+}
+
+/* ---------------------------------------------------------------
+ * Blog cards — staggered fade-up reveal on first paint / refetch.
+ * Works without requiring an in-view observer: a fresh `key` on the
+ * list triggers a re-mount, replaying the animation.
+ *
+ * NOTE: the hidden→visible transform is scoped to `.po-anim` so the
+ * fallback (animations disabled) still renders the cards.
+ * --------------------------------------------------------------- */
+
+/* NOTE: opacity-only so backdrop-filter on `.po-card-blog` (child of
+ * this animated wrapper) renders correctly — an ancestor `transform`
+ * would cancel the blur in Chromium. */
+@keyframes po-card-reveal-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.po-anim .po-card-reveal {
+  animation: po-card-reveal-in 0.5s ease-out both;
+  animation-delay: var(--po-delay, 0ms);
+  will-change: opacity;
+}
+
+/* When a `.po-card-reveal` lives inside a scroll-gated container,
+ * hold it hidden until `data-in-view="true"` so the reveal plays
+ * on scroll instead of on mount, and replays on re-entry. */
+.po-anim [data-in-view="false"] .po-card-reveal {
+  animation: none;
+  opacity: 0;
+}
+.po-anim [data-in-view="true"] .po-card-reveal {
+  animation: po-card-reveal-in 0.5s ease-out both;
+}
+
+/* ===============================================================
+ * Decorative animations — gated on `.po-anim` root class.
+ * When `ENABLE_ANIMATIONS` is `false` in config.ts, the `.po-anim`
+ * class is not added to `.po-pages`, so all rules below become
+ * no-ops. Core UI transitions (buttons, inputs, modals) are NOT
+ * gated by this flag.
+ * =============================================================== */
+
+/* ─── Reveal-on-scroll (fade + rise).
+ * Elements start hidden; when an ancestor with `data-in-view="true"`
+ * exists, children with `.po-reveal` animate into view. The optional
+ * `--po-delay` CSS variable adds a per-element stagger. */
+
+.po-anim .po-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.8, 0.3, 1),
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transition-delay: var(--po-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.po-anim [data-in-view="true"] .po-reveal,
+.po-anim .po-reveal[data-in-view="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Directional reveal variants — same timing as .po-reveal. */
+
+.po-anim .po-reveal-left,
+.po-anim .po-reveal-right,
+.po-anim .po-reveal-scale,
+.po-anim .po-reveal-tilt {
+  opacity: 0;
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.8, 0.3, 1),
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transition-delay: var(--po-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.po-anim .po-reveal-left {
+  transform: translateX(-46px);
+}
+.po-anim .po-reveal-right {
+  transform: translateX(46px);
+}
+.po-anim .po-reveal-scale {
+  transform: scale(0.9);
+}
+.po-anim .po-reveal-tilt {
+  transform: translate(-28px, 28px) rotate(-9deg);
+  transform-origin: bottom left;
+}
+
+.po-anim [data-in-view="true"] .po-reveal-left,
+.po-anim .po-reveal-left[data-in-view="true"],
+.po-anim [data-in-view="true"] .po-reveal-right,
+.po-anim .po-reveal-right[data-in-view="true"],
+.po-anim [data-in-view="true"] .po-reveal-scale,
+.po-anim .po-reveal-scale[data-in-view="true"],
+.po-anim [data-in-view="true"] .po-reveal-tilt,
+.po-anim .po-reveal-tilt[data-in-view="true"] {
+  opacity: 1;
+  transform: translate(0, 0) rotate(0) scale(1);
+}
+
+/* ─── Underline "draw-in" left → right after the heading appears.
+ * By default every `.po-underline` animates when it enters a scroll
+ * tracker (`data-in-view`). Works for headings inside sections that
+ * use `useInView`. The text itself also animates from white → accent
+ * blue in sync with the underline reveal. */
+
+.po-anim .po-underline {
+  color: #ffffff;
+  transition: color 0.7s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transition-delay: calc(var(--po-delay, 0ms) + 350ms);
+}
+.po-anim [data-in-view="true"] .po-underline,
+.po-anim .po-underline[data-in-view="true"] {
+  color: rgb(var(--page-accent));
+}
+
+.po-anim .po-underline::after {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transition-delay: calc(var(--po-delay, 0ms) + 350ms);
+}
+.po-anim [data-in-view="true"] .po-underline::after,
+.po-anim .po-underline[data-in-view="true"]::after {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Legacy alias — keep for safety. */
+.po-anim .po-underline-draw::after {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transition-delay: calc(var(--po-delay, 0ms) + 350ms);
+}
+.po-anim [data-in-view="true"] .po-underline-draw::after,
+.po-anim .po-underline-draw[data-in-view="true"]::after {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ─── Hero section — accent text colour-in (white → brand blue). */
+
+.po-anim .po-hero-accent {
+  color: #ffffff !important;
+  transition: color 0.8s cubic-bezier(0.2, 0.8, 0.3, 1);
+  transition-delay: calc(var(--po-delay, 0ms) + 250ms);
+}
+.po-anim [data-in-view="true"] .po-hero-accent {
+  color: rgb(var(--page-accent)) !important;
+}
+
+/* ─── Hero section — preview gentle idle float (after entry). */
+
+@keyframes po-hero-preview-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.po-anim [data-in-view="true"] .po-hero-preview {
+  animation: po-hero-preview-float 6s ease-in-out 1s infinite;
+}
+
+/* ─── Partners section — iPhone idle float (post-entry). */
+
+@keyframes po-partners-phone-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.po-anim [data-in-view="true"] .po-partners-phone {
+  animation: po-partners-phone-float 4.5s ease-in-out 0.9s infinite;
+}
+
+/* ─── CTA banner — decorative objects slow drift. */
+
+@keyframes po-cta-objects-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+.po-anim .po-cta-objects {
+  animation: po-cta-objects-drift 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ─── CTA banner — background effect slow breathing pulse. */
+
+@keyframes po-cta-bg-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.po-anim .po-cta-bg {
+  animation: po-cta-bg-pulse 6.5s ease-in-out infinite;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+/* ─── CTA banner — button pulsing glow (after entry). */
+
+@keyframes po-cta-btn-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(128, 178, 255, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(128, 178, 255, 0);
+  }
+}
+
+.po-anim [data-in-view="true"] .po-cta-btn {
+  animation: po-cta-btn-pulse 2.4s ease-out 0.9s infinite;
+  border-radius: 624.9375rem;
+  display: inline-block;
+}
+
+/* ─── Device card — glow soft fade (opacity only, no transform).
+ * Animating transform/filter on a heavily-blurred element causes
+ * pixelation and jitter on many GPUs — a plain opacity fade gives
+ * the same "breathing" feel without artifacts. */
+
+@keyframes po-glow-fade {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.po-anim .po-device-card__glow {
+  animation: po-glow-fade 5s ease-in-out infinite;
+  will-change: opacity;
+}
+
+.po-anim .po-device-card__glow--br {
+  animation-delay: -2.5s;
+}
+
+/* ─── Device card — watermark slow horizontal drift. */
+
+@keyframes po-watermark-drift {
+  0% {
+    transform: translateX(-3%);
+  }
+  50% {
+    transform: translateX(3%);
+  }
+  100% {
+    transform: translateX(-3%);
+  }
+}
+
+.po-anim .po-device-card__watermark {
+  animation: po-watermark-drift 12s ease-in-out infinite;
+}
+
+/* ─── Device images — gentle float (iPhone faster, MacBook slower). */
+
+@keyframes po-device-float-phone {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes po-device-float-laptop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.po-anim .po-device-card__img--phone {
+  animation: po-device-float-phone 5s ease-in-out infinite;
+}
+
+.po-anim .po-device-card__img--laptop {
+  animation: po-device-float-laptop 6s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------
+ * Skeleton shimmer — replaces Tailwind's `animate-pulse` with a
+ * smoother left-to-right gradient sweep. Applied to any element
+ * marked `.po-skeleton`.
+ * --------------------------------------------------------------- */
+
+@keyframes po-skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.po-pages .po-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.04);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: po-skeleton-shimmer 1.6s linear infinite;
+  border-radius: 0.375rem;
+}
+
+/* Soft fade-in/out wrapper used around skeleton ↔ content swaps. */
+@keyframes po-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.po-pages .po-fade-in {
+  animation: po-fade-in 0.35s ease-out both;
+}
+
+/* ---------------------------------------------------------------
+ * Blog article body — spacing, media and blockquote styling.
+ * Banner image keeps rounded corners in component markup; section
+ * media stays square to avoid mobile clipping artifacts.
+ * --------------------------------------------------------------- */
+
+.po-pages .po-article-html > * + * {
+  margin-top: 1.5rem;
+}
+.po-pages .po-article-html p,
+.po-pages .po-article-html ul,
+.po-pages .po-article-html ol,
+.po-pages .po-article-html blockquote,
+.po-pages .po-article-html figure,
+.po-pages .po-article-html pre {
+  margin: 0 0 1.5rem 0;
+}
+.po-pages .po-article-html > *:last-child {
+  margin-bottom: 0;
+}
+.po-pages .po-article-html img,
+.po-pages .po-article-html picture,
+.po-pages .po-article-html video,
+.po-pages .po-article-html figure img {
+  border-radius: 0;
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.po-pages .po-article-html blockquote {
+  margin: 0 0 1.5rem 0;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid rgb(var(--page-accent));
+  background: rgba(var(--page-accent), 0.08);
+  border-radius: 0.75rem;
+  color: #d4d7dc;
+  font-style: italic;
+}
+
+.po-pages .po-article-html blockquote p {
+  margin: 0;
+}
+
+/* ─── Respect users who prefer reduced motion: disable every
+ * decorative animation regardless of the config flag. Reveal still
+ * switches to a simple instant-show so content isn't hidden. */
+
+@media (prefers-reduced-motion: reduce) {
+  .po-anim .po-reveal,
+  .po-anim .po-reveal-left,
+  .po-anim .po-reveal-right,
+  .po-anim .po-reveal-scale,
+  .po-anim .po-reveal-tilt {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .po-anim .po-underline-draw::after {
+    clip-path: none;
+    transition: none;
+  }
+  .po-anim .po-underline {
+    color: rgb(var(--page-accent));
+    transition: none;
+  }
+  .po-anim .po-underline::after {
+    clip-path: none;
+    transition: none;
+  }
+  .po-anim .po-device-card:hover {
+    transform: none;
+  }
+  .po-anim .po-device-card__glow,
+  .po-anim .po-device-card__watermark,
+  .po-anim .po-device-card__img--phone,
+  .po-anim .po-device-card__img--laptop,
+  .po-anim .po-partners-phone,
+  .po-anim .po-cta-objects,
+  .po-anim .po-cta-bg,
+  .po-anim .po-cta-btn,
+  .po-anim .po-mobile-menu {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+ * Touch / no-hover devices — disable hover *and* active state styles.
+ *
+ * Rationale: on touch devices `:hover` typically "sticks" after the
+ * user taps an element and stays until the next tap elsewhere —
+ * which looks buggy. `:active` also briefly flashes on tap. The
+ * design brief is: only `:focus` (on inputs) should remain on
+ * touch devices.
+ *
+ * We re-declare each stateful selector back to its base value so
+ * hover/active rules defined elsewhere become no-ops.
+ * --------------------------------------------------------------- */
+
+.po-pages {
+  /* Kill iOS / Android grey tap highlight overlay site-wide. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none), (pointer: coarse) {
+  /* Inputs — stay at base state on touch (focus still applies). */
+  .po-pages .po-input-primary:hover:not(:focus) {
+    background-color: #171717;
+  }
+  .po-pages .po-input-search:hover:not(:focus) {
+    background-color: #101010;
+  }
+
+  /* Buttons — no active gradient flash on tap. */
+  .po-pages .po-btn-primary:active:not(:disabled),
+  .po-pages .po-btn-dark:active:not(:disabled) {
+    background-image: none;
+  }
+  .po-pages .po-btn-secondary:active:not(:disabled) {
+    background-color: transparent !important;
+    border-color: transparent !important;
+  }
+
+  /* Icon-only buttons — no hover / active flash. `[aria-current]`
+     and `.is-active` styles are preserved (they're not hover/tap). */
+  .po-pages .po-icon-btn:hover:not(:disabled):not([aria-current="page"]) {
+    background-color: rgba(45, 45, 45, 0.4);
+    color: #c7c7c7;
+  }
+  .po-pages .po-icon-btn:active:not(:disabled):not([aria-current="page"]):not(.is-active) {
+    background-color: rgba(45, 45, 45, 0.4);
+    color: #c7c7c7;
+  }
+
+  /* Blog cards. */
+  .po-pages a.po-card-blog:hover,
+  .po-pages a.po-card-blog:active {
+    background-color: rgba(29, 29, 29, 0.4) !important;
+    border-color: transparent !important;
+  }
+
+  /* Header / footer links — keep `.is-active` (route-match) coloring. */
+  .po-pages .po-link-footer:hover,
+  .po-pages .po-link-footer:active {
+    color: #696969;
+  }
+  .po-pages .po-link-header:hover,
+  .po-pages .po-link-header:active {
+    color: #5b5b5b;
+  }
+
+  /* Feature / security / device cards — no hover lift / tint / border. */
+  .po-pages .po-feature-card:hover,
+  .po-pages .po-feature-card:active,
+  .po-pages .po-device-card:hover,
+  .po-pages .po-device-card:active,
+  .po-pages .po-security-card:hover,
+  .po-pages .po-security-card:active,
+  .po-anim .po-feature-card:hover,
+  .po-anim .po-device-card:hover,
+  .po-anim .po-security-card:hover {
+    border-color: transparent !important;
+    transform: none !important;
+  }
+
+  /* TOC — skip hover tint on mobile (still keeps the active route
+     state via `.po-toc-link--active`). */
+  .po-pages .po-toc-link:hover {
+    color: inherit !important;
+    background: transparent !important;
+  }
+
+  /* Pagination / mobile tap highlight reset on NavLinks and anything
+     else that might pick up a hover tint via inherited rules. */
+  .po-pages a:hover,
+  .po-pages a:active,
+  .po-pages button:hover:not(:disabled),
+  .po-pages button:active:not(:disabled) {
+    /* Transitions still apply; we only suppress the :hover/:active
+     * visual styles that come from hardcoded CSS rules above. Tailwind
+     * hover:* utilities are already disabled on touch via the global
+     * `future.hoverOnlyWhenSupported` flag in tailwind.config.ts, so
+     * this block only needs to neutralise custom `.po-*` selectors
+     * (already listed). No universal overrides needed here. */
+  }
+}
+
+/* ---------------------------------------------------------------
+ * Blog list — entrance animation.
+ *
+ * On first mount the hero title/lead/search slide up and fade in
+ * with a light stagger. The card grid already reveals through
+ * `.po-card-reveal`, so the whole page composes smoothly.
+ * --------------------------------------------------------------- */
+
+@keyframes po-blog-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.po-anim .po-blog-hero__title,
+.po-anim .po-blog-hero__lead,
+.po-anim .po-blog-hero__search {
+  animation: po-blog-hero-rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  animation-delay: var(--po-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+/* Scroll-gated variant: when a scroll observer wraps the blog hero
+ * with `data-in-view`, hold the elements hidden until they enter the
+ * viewport. On re-entry the animation replays. */
+.po-anim [data-in-view="false"] .po-blog-hero__title,
+.po-anim [data-in-view="false"] .po-blog-hero__lead,
+.po-anim [data-in-view="false"] .po-blog-hero__search {
+  animation: none;
+  opacity: 0;
+  transform: translateY(16px);
+}
+.po-anim [data-in-view="true"] .po-blog-hero__title,
+.po-anim [data-in-view="true"] .po-blog-hero__lead,
+.po-anim [data-in-view="true"] .po-blog-hero__search {
+  animation: po-blog-hero-rise 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  animation-delay: var(--po-delay, 0ms);
+}
+
+/* ---------------------------------------------------------------
+ * Security card icon — 52×52 rounded badge with #80B2FF3D fill;
+ * the SVG inside renders at 32×32.
+ * --------------------------------------------------------------- */
+
+.po-security-card__icon {
+  background-color: #80b2ff3d;
+}
+.po-security-card__icon > svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* ---------------------------------------------------------------
+ * Page-wide top glow — two mirrored `effect.webp` blobs pinned to
+ * the top-left and top-right of the hero area, bleeding slightly
+ * outside the viewport per the Figma spec (650×787 each). Each
+ * blob runs its own slow floating animation and breathing opacity
+ * pulse — offset phases create gentle asymmetry without ever
+ * stealing focus from the hero content.
+ *
+ * Rendered as CSS backgrounds (not <img>) so they never enter the
+ * browser preload queue / LCP candidate list.
+ * --------------------------------------------------------------- */
+
+.po-page-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 49.1875rem; /* 787px — Figma blob height */
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+
+.po-pages--auth .po-page-fx {
+  height: 56rem;
+}
+
+.po-pages--auth .po-page-fx__blob {
+  opacity: 0.72;
+}
+
+.po-page-fx__blob {
+  position: absolute;
+  top: 0;
+  width: 40.625rem; /* 650px */
+  height: 49.1875rem; /* 787px */
+  background: url("/img/effect.webp") no-repeat center / contain;
+  opacity: 0.85;
+  will-change: transform, opacity;
+  animation-fill-mode: both;
+}
+
+.po-anim .po-page-fx__blob {
+  /* Soft entrance on mount \u2014 overlaid before the infinite float kicks in. */
+  animation:
+    po-fx-enter 1.2s cubic-bezier(0.2, 0.8, 0.3, 1) both,
+    po-fx-float-left 10s ease-in-out 1.2s infinite;
+}
+.po-anim .po-page-fx__blob--right {
+  animation:
+    po-fx-enter-right 1.2s cubic-bezier(0.2, 0.8, 0.3, 1) both,
+    po-fx-float-right 12s ease-in-out 1.2s infinite;
+}
+
+@keyframes po-fx-enter {
+  from {
+    opacity: 0;
+    transform: translate(-48%, -36%) scale(1.08);
+  }
+  to {
+    opacity: 0.85;
+    transform: translate(-38%, -26%) scale(1);
+  }
+}
+
+@keyframes po-fx-enter-right {
+  from {
+    opacity: 0;
+    transform: translate(48%, -36%) scaleX(-1) scale(1.08);
+  }
+  to {
+    opacity: 0.85;
+    transform: translate(38%, -26%) scaleX(-1) scale(1);
+  }
+}
+
+.po-page-fx__blob--left {
+  left: 0;
+  transform: translate(-38%, -26%);
+  animation: po-fx-float-left 10s ease-in-out infinite;
+}
+
+.po-page-fx__blob--right {
+  right: 0;
+  /* scaleX(-1) must be preserved inside the keyframes below. */
+  transform: translate(38%, -26%) scaleX(-1);
+  animation: po-fx-float-right 12s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+@keyframes po-fx-float-left {
+  0%,
+  100% {
+    transform: translate(-40%, -30%) scale(1);
+    opacity: 0.68;
+  }
+  50% {
+    transform: translate(-26%, -14%) scale(1.12);
+    opacity: 1;
+  }
+}
+
+@keyframes po-fx-float-right {
+  0%,
+  100% {
+    transform: translate(40%, -30%) scaleX(-1) scale(1);
+    opacity: 0.62;
+  }
+  50% {
+    transform: translate(26%, -14%) scaleX(-1) scale(1.14);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 64rem) {
+  .po-page-fx {
+    height: 37.5rem;
+  }
+  .po-page-fx__blob {
+    width: 36rem;
+    height: 40rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .po-pages--auth {
+    background:
+      radial-gradient(32rem 22rem at 50% -4rem, rgb(128 178 255 / 0.18), transparent 60%),
+      linear-gradient(180deg, #0a1220 0%, #070a11 20%, #070707 58%, #070707 100%);
+  }
+  .po-pages--auth::before {
+    opacity: 0.14;
+    background-size: 42rem auto;
+  }
+  .po-pages--auth::after {
+    background:
+      radial-gradient(24rem 18rem at 50% 9rem, rgb(128 178 255 / 0.14), transparent 68%),
+      linear-gradient(180deg, rgb(7 7 7 / 0) 0%, rgb(7 7 7 / 0.28) 36%, rgb(7 7 7 / 0.74) 74%, #070707 100%);
+  }
+  .po-pages--auth .po-page-fx {
+    height: 44rem;
+  }
+  .po-page-fx {
+    height: 30rem;
+  }
+  .po-page-fx__blob {
+    width: 42rem;
+    height: 38rem;
+    opacity: 0.65;
+  }
+  /* Push the blobs further off-screen horizontally on mobile so
+   * only the inner edge of the glow bleeds into the viewport. */
+  .po-page-fx__blob--left {
+    transform: translate(-62%, -28%);
+  }
+  .po-page-fx__blob--right {
+    transform: translate(62%, -28%) scaleX(-1);
+  }
+  .po-anim .po-page-fx__blob--left {
+    animation: po-fx-float-left-mobile 10s ease-in-out infinite;
+  }
+  .po-anim .po-page-fx__blob--right {
+    animation: po-fx-float-right-mobile 12s ease-in-out -3s infinite;
+  }
+}
+
+@keyframes po-fx-float-left-mobile {
+  0%,
+  100% {
+    transform: translate(-64%, -30%) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-52%, -18%) scale(1.08);
+    opacity: 0.85;
+  }
+}
+@keyframes po-fx-float-right-mobile {
+  0%,
+  100% {
+    transform: translate(64%, -30%) scaleX(-1) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(52%, -18%) scaleX(-1) scale(1.1);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .po-page-fx__blob,
+  .po-page-fx__blob--left,
+  .po-page-fx__blob--right {
+    animation: none !important;
+    opacity: 0.6;
+  }
+}
+
+/* ---------------------------------------------------------------
+ * Decorative section lines (`line-1.webp`, `line-2.webp`, `line-3.webp`).
+ *
+ * Three oversized blueprint-style backdrops assigned per-section
+ * by Figma spec:
+ *   • `.po-home-deco--a` → `line-1.webp` — "Часто Задаваемые Вопросы"
+ *   • `.po-home-deco--b` → `line-2.webp` — "На Любом Устройстве"
+ *   • `.po-home-deco--c` → `line-3.webp` — "PO Terminal Делает Твой Трейдинг Умнее"
+ *
+ * Rendered as CSS backgrounds so they never fight with the hero
+ * image for LCP priority. Each wrapper uses `[data-in-view="true"]`
+ * to trigger a soft fade + drift entrance; after that a slow
+ * infinite parallax drift with scale + rotation keeps them alive.
+ * --------------------------------------------------------------- */
+
+.po-home-deco-wrap {
+  position: relative;
+  /* Allow decorative line image to bleed beyond the section without
+     being clipped — decor should overflow into neighbouring sections. */
+  overflow: visible;
+  isolation: auto; /* don't create a stacking root (would trap blurs) */
+}
+
+.po-home-deco {
+  position: absolute;
+  /* Extend beyond the section so the line image bleeds into
+     neighbouring sections instead of getting cropped to the wrapper. */
+  top: -12%;
+  bottom: -12%;
+  left: -6%;
+  right: -6%;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: min(160%, 160rem) auto;
+  opacity: 0;
+  transform: translate3d(-2%, 1.25rem, 0) scale(1.06);
+  transition:
+    opacity 1.4s ease-out,
+    transform 1.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.po-home-deco--a {
+  background-image: url("/img/line-1.webp");
+}
+
+.po-home-deco--b {
+  background-image: url("/img/line-2.webp");
+}
+
+.po-home-deco--c {
+  background-image: url("/img/line-3.webp");
+}
+
+.po-home-deco-wrap[data-in-view="true"] .po-home-deco {
+  opacity: 0.95;
+  transform: translate3d(0, 0, 0) scale(1);
+  animation: po-deco-drift 12s ease-in-out 1.4s infinite;
+}
+
+/* Push children above the deco layer. */
+.po-home-deco-wrap > :not(.po-home-deco) {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes po-deco-drift {
+  0%,
+  100% {
+    background-position: 44% 44%;
+    background-size: min(160%, 160rem) auto;
+    opacity: 0.8;
+  }
+  50% {
+    background-position: 58% 56%;
+    background-size: min(176%, 176rem) auto;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 40rem) {
+  .po-home-deco {
+    background-size: 260% auto;
+  }
+  .po-home-deco-wrap[data-in-view="true"] .po-home-deco {
+    opacity: 0.6;
+    animation-duration: 20s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .po-home-deco,
+  .po-home-deco-wrap[data-in-view="true"] .po-home-deco {
+    animation: none !important;
+    transition: opacity 0.4s ease;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+ * 404 page — oversized accent "404" numerals with a subtle
+ * gradient + soft glow. Matches the hero headline treatment.
+ * --------------------------------------------------------------- */
+
+.po-pages .po-nf-code {
+  background-image: linear-gradient(
+    180deg,
+    rgb(var(--page-accent) / 0.95) 0%,
+    rgb(var(--page-accent) / 0.35) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 10px 40px rgb(var(--page-accent) / 0.28));
+}
+
+/* ---------------------------------------------------------------
+ * Unified <Section> wrapper — per-side vertical padding driven by
+ * CSS custom properties. Components set `--po-section-pt-*` /
+ * `--po-section-pb-*` inline; the wrapper exposes the correct one
+ * at each breakpoint. Defaults to 0 (let the markup opt in).
+ * --------------------------------------------------------------- */
+.po-section {
+  padding-top: var(--po-section-pt-m, 0px);
+  padding-bottom: var(--po-section-pb-m, 0px);
+}
+@media (min-width: 64rem) {
+  .po-section {
+    padding-top: var(--po-section-pt-d, var(--po-section-pt-m, 0px));
+    padding-bottom: var(--po-section-pb-d, var(--po-section-pb-m, 0px));
+  }
+}
+
+/* Per-card height — driven by `--po-card-h-m` / `--po-card-h-d`
+   custom properties set inline by <FeatureCard>.
+   Mobile/tablet use exact `height` so cards lock strictly to the
+   configured mobile value. Desktop uses `min-height` so grid rows
+   with `items-stretch` can equalize neighbouring cards. */
+.po-feature-card--sized {
+  height: var(--po-card-h-m, auto);
+}
+@media (min-width: 64rem) {
+  .po-feature-card--sized {
+    height: auto;
+    min-height: var(--po-card-h-d, var(--po-card-h-m, auto));
+  }
+}
+
+/* Responsive gap helper — set `--po-gap-m` / `--po-gap-d` inline
+   and apply `.po-gap` to any flex / grid container.
+   Breakpoint matches the project's Tailwind `sm:` (30rem / 480px).
+   Mobile  (< 30rem / 480px):  `--po-gap-m`
+   Tablet+ (≥ 30rem / 480px):  `--po-gap-d` */
+.po-gap {
+  gap: var(--po-gap-m, 0px);
+}
+@media (min-width: 30rem) {
+  .po-gap {
+    gap: var(--po-gap-d, var(--po-gap-m, 0px));
+  }
+}
+
+/* ---------------------------------------------------------------
+ * Horizontal carousel helper (legacy — now unused).
+ * Carousels bleed via Tailwind `-mx-*` + `px-*` classes that match
+ * the page container's responsive padding; no global helper needed.
+ * --------------------------------------------------------------- */

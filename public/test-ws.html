@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WS Test — PocketOption</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0e1118; color: #e0e0e0;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px; padding: 12px;
+  }
+  h1 { font-size: 16px; color: #2ebd85; margin-bottom: 10px; }
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: flex-end; margin-bottom: 12px;
+    background: rgba(255,255,255,0.04); padding: 10px; border-radius: 8px;
+  }
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .field label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+  .field input, .field textarea, .field select {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; border-radius: 6px; padding: 6px 8px; font-family: inherit; font-size: 12px;
+    outline: none;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: #2ebd85; }
+  .field input { width: 140px; }
+  .field.wide input { width: 420px; }
+  .field select { width: 180px; }
+  .field textarea { width: 100%; min-height: 60px; resize: vertical; }
+  button {
+    background: #2ebd85; color: #000; border: none; border-radius: 6px;
+    padding: 7px 16px; font-weight: 700; font-size: 12px; cursor: pointer;
+    font-family: inherit; transition: opacity 0.15s;
+  }
+  button:hover { opacity: 0.85; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.danger { background: #ef4444; color: #fff; }
+  button.secondary { background: rgba(255,255,255,0.1); color: #fff; }
+  button.warn { background: #f59e0b; color: #000; }
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; padding: 6px 12px; border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #ef4444; flex-shrink: 0;
+  }
+  .dot.on { background: #2ebd85; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .log-wrap {
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 8px; height: calc(100vh - 320px);
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .log-entry {
+    padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+    word-break: break-all; line-height: 1.4;
+  }
+  .log-entry .ts { color: rgba(255,255,255,0.3); margin-right: 6px; }
+  .log-entry.send { color: #60a5fa; }
+  .log-entry.recv { color: #a3e635; }
+  .log-entry.info { color: #fbbf24; }
+  .log-entry.error { color: #ef4444; }
+  .log-entry .ev { color: #c084fc; font-weight: 700; }
+  .toolbar { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+  .counter { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: auto; }
+  .send-row { display: flex; gap: 6px; margin-top: 8px; }
+  .send-row input { flex: 1; }
+  select option { background: #1a1d2e; color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>🔌 PocketOption WebSocket Tester</h1>
+
+<div class="controls">
+  <div class="field">
+    <label>Region</label>
+    <select id="region" onchange="onRegionChange()">
+      <optgroup label="Live">
+        <option value="wss://api-eu.po.market/socket.io/?EIO=4&transport=websocket" selected>EUROPA (EU)</option>
+        <option value="wss://api-fr.po.market/socket.io/?EIO=4&transport=websocket">FRANCE</option>
+        <option value="wss://api-fr2.po.market/socket.io/?EIO=4&transport=websocket">FRANCE 2</option>
+        <option value="wss://api-fin.po.market/socket.io/?EIO=4&transport=websocket">FINLAND</option>
+        <option value="wss://api-sc.po.market/socket.io/?EIO=4&transport=websocket">SEYCHELLES</option>
+        <option value="wss://api-hk.po.market/socket.io/?EIO=4&transport=websocket">HONG KONG</option>
+        <option value="wss://api-asia.po.market/socket.io/?EIO=4&transport=websocket">ASIA</option>
+        <option value="wss://api-in.po.market/socket.io/?EIO=4&transport=websocket">INDIA</option>
+        <option value="wss://api-msk.po.market/socket.io/?EIO=4&transport=websocket">RUSSIA</option>
+        <option value="wss://api-spb.po.market/socket.io/?EIO=4&transport=websocket">SERVER 1 (SPB)</option>
+        <option value="wss://api-l.po.market/socket.io/?EIO=4&transport=websocket">SERVER 2</option>
+        <option value="wss://api-c.po.market/socket.io/?EIO=4&transport=websocket">SERVER 3</option>
+        <option value="wss://api-us-north.po.market/socket.io/?EIO=4&transport=websocket">US NORTH</option>
+        <option value="wss://api-us2.po.market/socket.io/?EIO=4&transport=websocket">US 2</option>
+        <option value="wss://api-us3.po.market/socket.io/?EIO=4&transport=websocket">US 3</option>
+        <option value="wss://api-us4.po.market/socket.io/?EIO=4&transport=websocket">US 4</option>
+        <option value="wss://api-us-south.po.market/socket.io/?EIO=4&transport=websocket">US SOUTH</option>
+      </optgroup>
+      <optgroup label="Demo">
+        <option value="wss://demo-api-eu.po.market/socket.io/?EIO=4&transport=websocket">DEMO (EU)</option>
+        <option value="wss://try-demo-eu.po.market/socket.io/?EIO=4&transport=websocket">DEMO 2 (TRY)</option>
+      </optgroup>
+      <optgroup label="Custom">
+        <option value="custom">Custom URL...</option>
+      </optgroup>
+    </select>
+  </div>
+  <div class="field wide" id="customUrlField" style="display:none;">
+    <label>Custom URL</label>
+    <input id="customUrl" value="">
+  </div>
+  <div class="field">
+    <label>UID</label>
+    <input id="uid" value="115873679">
+  </div>
+  <div class="field">
+    <label>isDemo</label>
+    <select id="isDemo" style="width: 70px;">
+      <option value="0">0 (Real)</option>
+      <option value="1">1 (Demo)</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Proxy</label>
+    <div style="display:flex; align-items:center; gap:6px;">
+      <label style="font-size:11px; color:rgba(255,255,255,0.6); display:flex; align-items:center; gap:4px; cursor:pointer;">
+        <input type="checkbox" id="useProxy" checked> ws://localhost:
+      </label>
+      <input id="proxyPort" value="3399" style="width:55px;">
+    </div>
+  </div>
+  <button id="btnConnect" onclick="doConnect()">Connect</button>
+  <button id="btnTryAll" class="warn" onclick="doTryAllRegions()">Try All Regions</button>
+  <button id="btnDisconnect" class="danger" onclick="doDisconnect()" disabled>Disconnect</button>
+  <div class="status">
+    <div class="dot" id="statusDot"></div>
+    <span id="statusText">Disconnected</span>
+  </div>
+</div>
+
+<details style="margin-bottom: 8px;">
+  <summary style="cursor:pointer; color: rgba(255,255,255,0.5); font-size: 11px;">Session / SSID (click to edit)</summary>
+  <div class="field" style="margin-top: 6px;">
+    <label>Paste full 42["auth",...] or just the session string</label>
+    <textarea id="session" rows="4">a:4:{s:10:"session_id";s:32:"28b7e38a6a6a3bef2890c61c8f0ca51f";s:10:"ip_address";s:13:"146.70.129.22";s:10:"user_agent";s:117:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36";s:13:"last_activity";i:1772033219;}8dd99d1ad3c0ba202491d0060c0a68df</textarea>
+  </div>
+</details>
+
+<div class="toolbar">
+  <button class="secondary" onclick="clearLog()">Clear</button>
+  <label style="font-size:11px; color:rgba(255,255,255,0.5); display:flex; align-items:center; gap:4px;">
+    <input type="checkbox" id="autoscroll" checked> Auto-scroll
+  </label>
+  <label style="font-size:11px; color:rgba(255,255,255,0.5); display:flex; align-items:center; gap:4px;">
+    <input type="checkbox" id="showPing"> Show ping/pong
+  </label>
+  <span class="counter" id="counter">0 messages</span>
+</div>
+
+<div class="log-wrap" id="logWrap"></div>
+
+<div class="send-row">
+  <input id="sendInput" placeholder='Raw frame, e.g. 42["changeSymbol",{"asset":"EURUSD_otc","period":60}]' onkeydown="if(event.key==='Enter')doSend()">
+  <button onclick="doSend()">Send</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   PocketOption WS Tester
+   (matches PocketOptionAPI Python client)
+   ═══════════════════════════════════════ */
+
+let ws = null;
+let pingTimer = null;
+let msgCount = 0;
+let tryAllAbort = false;
+
+const $ = (id) => document.getElementById(id);
+
+/* ── Regions (from Python API constants.py) ── */
+const ALL_REGIONS = [
+  { name: 'EUROPA',   url: 'wss://api-eu.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'FRANCE',   url: 'wss://api-fr.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'FRANCE2',  url: 'wss://api-fr2.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'FINLAND',  url: 'wss://api-fin.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'SEYCHELLES', url: 'wss://api-sc.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'HONGKONG', url: 'wss://api-hk.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'ASIA',     url: 'wss://api-asia.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'INDIA',    url: 'wss://api-in.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'RUSSIA',   url: 'wss://api-msk.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'SERVER1',  url: 'wss://api-spb.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'SERVER2',  url: 'wss://api-l.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'SERVER3',  url: 'wss://api-c.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'US_NORTH', url: 'wss://api-us-north.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'US2',      url: 'wss://api-us2.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'US3',      url: 'wss://api-us3.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'US4',      url: 'wss://api-us4.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'US_SOUTH', url: 'wss://api-us-south.po.market/socket.io/?EIO=4&transport=websocket' },
+];
+const DEMO_REGIONS = [
+  { name: 'DEMO',   url: 'wss://demo-api-eu.po.market/socket.io/?EIO=4&transport=websocket' },
+  { name: 'DEMO_2', url: 'wss://try-demo-eu.po.market/socket.io/?EIO=4&transport=websocket' },
+];
+
+/* ── Helpers ── */
+function ts() {
+  const d = new Date();
+  return d.toLocaleTimeString('ru-RU', { hour12: false }) + '.' + String(d.getMilliseconds()).padStart(3, '0');
+}
+
+function log(type, text) {
+  msgCount++;
+  $('counter').textContent = msgCount + ' messages';
+  const el = document.createElement('div');
+  el.className = 'log-entry ' + type;
+  el.innerHTML = `<span class="ts">${ts()}</span>${text}`;
+  $('logWrap').appendChild(el);
+  if ($('autoscroll').checked) {
+    $('logWrap').scrollTop = $('logWrap').scrollHeight;
+  }
+}
+
+function clearLog() {
+  $('logWrap').innerHTML = '';
+  msgCount = 0;
+  $('counter').textContent = '0 messages';
+}
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function setStatus(connected, regionName) {
+  $('statusDot').className = connected ? 'dot on' : 'dot';
+  $('statusText').textContent = connected ? `Connected (${regionName || 'unknown'})` : 'Disconnected';
+  $('btnConnect').disabled = connected;
+  $('btnDisconnect').disabled = !connected;
+  $('btnTryAll').disabled = connected;
+}
+
+function onRegionChange() {
+  $('customUrlField').style.display = $('region').value === 'custom' ? '' : 'none';
+}
+
+function getSelectedUrl() {
+  const v = $('region').value;
+  return v === 'custom' ? $('customUrl').value.trim() : v;
+}
+
+/* ── Build WebSocket URL (direct or through proxy) ── */
+function buildWsUrl(targetUrl) {
+  if ($('useProxy').checked) {
+    const port = $('proxyPort').value.trim() || '3399';
+    return `ws://localhost:${port}?target=${encodeURIComponent(targetUrl)}`;
+  }
+  return targetUrl;
+}
+
+/* ── Parse session from 42["auth",...] or raw ── */
+function parseSession() {
+  let raw = $('session').value.trim();
+  // If user pasted full 42["auth",...] format, extract session
+  if (raw.startsWith('42["auth"')) {
+    try {
+      const jsonStart = raw.indexOf('{');
+      const jsonEnd = raw.lastIndexOf('}') + 1;
+      const data = JSON.parse(raw.substring(jsonStart, jsonEnd));
+      if (data.session) {
+        $('session').value = data.session;
+        if (data.uid) $('uid').value = data.uid;
+        if (data.isDemo !== undefined) $('isDemo').value = String(data.isDemo);
+        log('info', `📋 Parsed SSID: uid=${data.uid}, isDemo=${data.isDemo}, session=${data.session.substring(0, 40)}...`);
+        return data.session;
+      }
+    } catch (e) {
+      log('error', 'Failed to parse SSID: ' + esc(e.message));
+    }
+  }
+  return raw;
+}
+
+/* ── Send raw frame ── */
+function sendRaw(data) {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  // Don't log ping/pong unless checkbox is on
+  const isPing = (data === '2' || data === '3' || data === '42["ps"]');
+  if (isPing && !$('showPing').checked) {
+    ws.send(data);
+    return;
+  }
+  log('send', `⬆ [${data.length}B] ${esc(data.substring(0, 500))}${data.length > 500 ? '...' : ''}`);
+  ws.send(data);
+}
+
+/* ── Connect to a single URL ── */
+function doConnect(url, regionName) {
+  if (!url) url = getSelectedUrl();
+  if (!regionName) {
+    const sel = $('region');
+    regionName = sel.value === 'custom' ? 'CUSTOM' : sel.options[sel.selectedIndex].text;
+  }
+  if (!url) { log('error', 'No URL'); return; }
+
+  // Cleanup previous
+  doDisconnect(true);
+
+  const wsUrl = buildWsUrl(url);
+  const viaProxy = $('useProxy').checked;
+  log('info', `🔌 Connecting to <b>${esc(regionName)}</b>${viaProxy ? ' via proxy' : ''}: ${esc(url)} ...`);
+  if (viaProxy) log('info', `🔀 Proxy URL: ${esc(wsUrl)}`);
+
+  try {
+    ws = new WebSocket(wsUrl);
+  } catch (e) {
+    log('error', '❌ ' + esc(e.message));
+    return;
+  }
+
+  ws._regionName = regionName;
+  ws._authenticated = false;
+
+  ws.onopen = () => {
+    log('info', '✅ WebSocket OPEN');
+  };
+
+  ws.onmessage = (ev) => {
+    if (typeof ev.data !== 'string') {
+      // Binary message — try to decode
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        try {
+          const json = JSON.parse(text);
+          log('recv', `📦 Binary JSON: ${esc(JSON.stringify(json).substring(0, 500))}`);
+        } catch {
+          log('recv', `📦 Binary [${ev.data.size}B]`);
+        }
+      };
+      reader.readAsText(ev.data);
+      return;
+    }
+
+    const data = ev.data;
+
+    // ── Server ping "2" → respond "3" (like Python API) ──
+    if (data === '2') {
+      ws.send('3'); // immediate pong
+      if ($('showPing').checked) log('recv', '⬇ PING (2) → sent PONG (3)');
+      return;
+    }
+
+    // ── Pong "3" ──
+    if (data === '3') {
+      if ($('showPing').checked) log('recv', '⬇ PONG (3)');
+      return;
+    }
+
+    // ── Socket.IO DISCONNECT "41" ──
+    if (data === '41') {
+      log('error', '🚫 <b>41 DISCONNECT</b> — Server rejected connection (SSID invalid/expired?)');
+      setStatus(false);
+      return;
+    }
+
+    const display = data.length > 600
+      ? esc(data.substring(0, 600)) + `... [${data.length}B]`
+      : esc(data);
+    log('recv', `⬇ [${data.length}B] ${display}`);
+
+    // ── Engine.IO OPEN "0{...}" ──
+    if (data.startsWith('0{')) {
+      try {
+        const h = JSON.parse(data.substring(1));
+        log('info', `📋 Handshake: sid=${h.sid}, pingInterval=${h.pingInterval}ms`);
+        // Step 1: Send Socket.IO CONNECT (like Python _send_handshake)
+        sendRaw('40');
+      } catch (e) {
+        log('error', 'Parse error: ' + esc(e.message));
+      }
+      return;
+    }
+
+    // ── Socket.IO CONNECT ACK "40{...}" ──
+    if (data.startsWith('40')) {
+      log('info', '🔗 Socket.IO namespace / connected');
+      // Step 2: Send auth SSID (like Python _send_handshake)
+      const session = parseSession();
+      const authData = {
+        session: session,
+        isDemo: parseInt($('isDemo').value) || 0,
+        uid: parseInt($('uid').value) || 0,
+        platform: 1,
+        isFastHistory: true,
+        isOptimized: true,
+      };
+      sendRaw('42' + JSON.stringify(['auth', authData]));
+
+      // Step 3: Start keepalive with 42["ps"] every 20s (like Python _ping_loop)
+      if (pingTimer) clearInterval(pingTimer);
+      pingTimer = setInterval(() => sendRaw('42["ps"]'), 20000);
+      return;
+    }
+
+    // ── Socket.IO EVENT "42[...]" ──
+    if (data.startsWith('42')) {
+      try {
+        const payload = JSON.parse(data.substring(2));
+        const evName = payload[0];
+        const evData = payload[1] || {};
+
+        // Handle known events
+        if (evName === 'successauth' || evName === 'authenticated') {
+          ws._authenticated = true;
+          setStatus(true, ws._regionName);
+          log('info', `🔐 <b>Authenticated!</b> Event: ${evName}`);
+        } else if (evName === 'NotAuthorized') {
+          log('error', `🚫 <b>NotAuthorized</b> — SSID invalid or expired`);
+        } else if (evName === 'successupdateBalance' || evName === 'balance_updated') {
+          log('info', `💰 Balance: $${evData.balance || JSON.stringify(evData).substring(0, 200)}`);
+        } else if (evName === 'updateStream') {
+          if ($('showPing').checked) {
+            log('recv', `📈 <span class="ev">stream</span> ${esc(JSON.stringify(evData).substring(0, 200))}`);
+          }
+        } else {
+          log('recv', `📨 <span class="ev">${esc(evName)}</span> ${esc(JSON.stringify(evData).substring(0, 400))}`);
+        }
+      } catch { /* skip parse errors */ }
+      return;
+    }
+
+    // ── Binary Socket.IO events "451-[...]" ──
+    if (data.startsWith('451-') || data.startsWith('45')) {
+      try {
+        const jsonPart = data.split('-', 2)[1];
+        if (jsonPart) {
+          const parsed = JSON.parse(jsonPart);
+          const evName = parsed[0];
+          log('recv', `📦 <span class="ev">${esc(evName)}</span> (binary event)`);
+        } else {
+          log('recv', '📦 Binary event');
+        }
+      } catch {
+        log('recv', '📦 Binary event');
+      }
+      return;
+    }
+
+    // ── Payout data "[[5,..." ──
+    if (data.startsWith('[[5,')) {
+      try {
+        const assets = JSON.parse(data);
+        log('info', `📊 Payout data: ${assets.length} assets received`);
+      } catch {
+        log('recv', `📊 Payout data [${data.length}B]`);
+      }
+    }
+  };
+
+  ws.onerror = () => {
+    log('error', '❌ WebSocket error');
+  };
+
+  ws.onclose = (ev) => {
+    log('info', `🔴 Closed: code=${ev.code} reason=${ev.reason || '(none)'}`);
+    setStatus(false);
+    if (pingTimer) { clearInterval(pingTimer); pingTimer = null; }
+  };
+}
+
+/* ── Try all regions sequentially ── */
+async function doTryAllRegions() {
+  const isDemo = parseInt($('isDemo').value) || 0;
+  const regions = isDemo ? [...DEMO_REGIONS, ...ALL_REGIONS] : ALL_REGIONS;
+  tryAllAbort = false;
+  $('btnTryAll').disabled = true;
+  $('btnTryAll').textContent = 'Trying...';
+
+  log('info', `🌍 Trying ${regions.length} regions (isDemo=${isDemo})...`);
+
+  for (const r of regions) {
+    if (tryAllAbort) break;
+
+    log('info', `┌─ Trying ${r.name}...`);
+
+    const result = await new Promise((resolve) => {
+      doDisconnect(true);
+
+      let timeout;
+      try {
+        ws = new WebSocket(buildWsUrl(r.url));
+      } catch {
+        resolve('error');
+        return;
+      }
+
+      ws._regionName = r.name;
+
+      timeout = setTimeout(() => {
+        resolve('timeout');
+        if (ws) ws.close();
+      }, 8000);
+
+      ws.onopen = () => {
+        // Wait for handshake
+      };
+
+      ws.onmessage = (ev) => {
+        const data = typeof ev.data === 'string' ? ev.data : '';
+
+        if (data.startsWith('0{')) {
+          ws.send('40');
+          return;
+        }
+
+        if (data.startsWith('40')) {
+          const session = parseSession();
+          const authData = {
+            session, isDemo,
+            uid: parseInt($('uid').value) || 0,
+            platform: 1, isFastHistory: true, isOptimized: true,
+          };
+          ws.send('42' + JSON.stringify(['auth', authData]));
+          return;
+        }
+
+        if (data === '41') {
+          clearTimeout(timeout);
+          resolve('rejected');
+          return;
+        }
+
+        if (data === '2') { ws.send('3'); return; }
+
+        if (data.startsWith('42')) {
+          try {
+            const payload = JSON.parse(data.substring(2));
+            if (payload[0] === 'successauth' || payload[0] === 'authenticated') {
+              clearTimeout(timeout);
+              resolve('success');
+              return;
+            }
+            if (payload[0] === 'NotAuthorized') {
+              clearTimeout(timeout);
+              resolve('rejected');
+              return;
+            }
+          } catch {}
+        }
+      };
+
+      ws.onerror = () => {
+        clearTimeout(timeout);
+        resolve('error');
+      };
+
+      ws.onclose = () => {
+        clearTimeout(timeout);
+        resolve('closed');
+      };
+    });
+
+    if (result === 'success') {
+      log('info', `└─ ✅ <b>${r.name}</b> — SUCCESS! Authenticated.`);
+      // Re-establish full connection to this region
+      doConnect(r.url, r.name);
+      $('btnTryAll').textContent = 'Try All Regions';
+      $('btnTryAll').disabled = false;
+      return;
+    }
+
+    const statusIcon = result === 'rejected' ? '🚫' : result === 'error' ? '❌' : result === 'timeout' ? '⏰' : '🔴';
+    log('info', `└─ ${statusIcon} ${r.name} — ${result}`);
+  }
+
+  log('error', '❌ All regions failed. SSID is likely expired. Get a fresh one from PocketOption DevTools.');
+  $('btnTryAll').textContent = 'Try All Regions';
+  $('btnTryAll').disabled = false;
+}
+
+/* ── Disconnect ── */
+function doDisconnect(silent) {
+  if (ws) {
+    ws.onclose = null;
+    ws.onerror = null;
+    ws.onmessage = null;
+    try { ws.close(); } catch {}
+    ws = null;
+  }
+  if (pingTimer) { clearInterval(pingTimer); pingTimer = null; }
+  setStatus(false);
+  if (!silent) log('info', '👋 Disconnected by user');
+}
+
+/* ── Send custom frame ── */
+function doSend() {
+  const val = $('sendInput').value.trim();
+  if (!val) return;
+  sendRaw(val);
+  $('sendInput').value = '';
+}
+</script>
+</body>
+</html>

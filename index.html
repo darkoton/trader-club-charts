@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://better.po-terminal.com" crossorigin />
+    <link rel="preconnect" href="https://api.t-club-robot.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Unbounded:wght@200..900&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    
+    <noscript
+      ><link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Unbounded:wght@200..900&display=swap"
+        rel="stylesheet"
+    /></noscript>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="theme-color" content="#070707" />
+    <meta
+      name="description"
+      content="PO Terminal — бесплатные инструменты для торговли бинарными опционами на Pocket Option. Графики, сигналы 24/7, торговые стратегии и авто-роботы."
+    />
+    <meta property="og:title" content="PO Terminal" />
+    <meta
+      property="og:description"
+      content="PO Terminal — бесплатные инструменты для торговли бинарными опционами на Pocket Option."
+    />
+    <meta property="og:image" content="/img/preview.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/img/preview.png" />
+    <title>PO Terminal</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #070707;
+        color-scheme: dark;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!--
+        Inline preloader — shown instantly while JS bundles load.
+        Only displayed on app routes (/terminal, /only-graph, /admin, /copy-trader).
+        Marketing pages (/, /blog, /auth/*, /terms, /privacy) get NO preloader.
+      -->
+      <div
+        id="boot-preloader"
+        style="
+          display: none;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          background: #131722;
+          overflow: hidden;
+          position: relative;
+          font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif;
+        "
+      >
+        <style>
+          @keyframes bp-grid {
+            0%,
+            100% {
+              opacity: 0.4;
+            }
+            50% {
+              opacity: 1;
+            }
+          }
+          @keyframes bp-fadeUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes bp-pulse {
+            0%,
+            100% {
+              box-shadow:
+                0 0 0 0 rgba(46, 189, 133, 0.7),
+                0 0 20px rgba(46, 189, 133, 0.3);
+              transform: scale(1);
+            }
+            50% {
+              box-shadow:
+                0 0 0 8px rgba(46, 189, 133, 0),
+                0 0 30px rgba(46, 189, 133, 0.5);
+              transform: scale(1.1);
+            }
+          }
+          @keyframes bp-ring {
+            0% {
+              transform: translate(-50%, -50%) scale(1);
+              opacity: 0.7;
+            }
+            100% {
+              transform: translate(-50%, -50%) scale(2.5);
+              opacity: 0;
+            }
+          }
+          @keyframes bp-bar {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(350%);
+            }
+          }
+          @keyframes bp-text {
+            0%,
+            100% {
+              opacity: 0.4;
+            }
+            50% {
+              opacity: 1;
+            }
+          }
+          @keyframes bp-draw {
+            0% {
+              stroke-dashoffset: 350;
+              opacity: 0.3;
+            }
+            50% {
+              stroke-dashoffset: 0;
+              opacity: 1;
+            }
+            80% {
+              stroke-dashoffset: 0;
+              opacity: 1;
+            }
+            100% {
+              stroke-dashoffset: -350;
+              opacity: 0.3;
+            }
+          }
+          @keyframes bp-candle {
+            0%,
+            100% {
+              opacity: 0.5;
+              transform: scaleY(0.85);
+            }
+            50% {
+              opacity: 1;
+              transform: scaleY(1);
+            }
+          }
+          @keyframes bp-sweep {
+            0% {
+              transform: translateX(-40px);
+            }
+            100% {
+              transform: translateX(200px);
+            }
+          }
+          #boot-preloader::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+              repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.015) 0px,
+                transparent 1px,
+                transparent 60px
+              ),
+              repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.015) 0px,
+                transparent 1px,
+                transparent 60px
+              );
+            animation: bp-grid 4s ease-in-out infinite;
+          }
+          #boot-preloader .bp-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            z-index: 1;
+            animation: bp-fadeUp 0.8s ease-out;
+          }
+          #boot-preloader .bp-chart {
+            width: 280px;
+            height: 112px;
+          }
+          #boot-preloader .bp-chart svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+          }
+          #boot-preloader .bp-chart .grid {
+            stroke: rgba(255, 255, 255, 0.04);
+            stroke-width: 0.5;
+            stroke-dasharray: 4 4;
+          }
+          #boot-preloader .bp-chart .candles {
+            animation: bp-candle 2s ease-in-out infinite;
+            transform-origin: center;
+          }
+          #boot-preloader .bp-chart .priceline {
+            fill: none;
+            stroke: #2ebd85;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 350;
+            stroke-dashoffset: 350;
+            animation: bp-draw 2.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px rgba(46, 189, 133, 0.4));
+          }
+          #boot-preloader .bp-chart .beam {
+            fill: rgba(46, 189, 133, 0.04);
+            animation: bp-sweep 2.5s ease-in-out infinite;
+          }
+          #boot-preloader .bp-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+          #boot-preloader .bp-dot {
+            width: 12px;
+            height: 12px;
+            background: #2ebd85;
+            border-radius: 50%;
+            position: relative;
+            animation: bp-pulse 3s ease-in-out infinite;
+          }
+          #boot-preloader .bp-dot::before,
+          #boot-preloader .bp-dot::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #2ebd85;
+            opacity: 0;
+          }
+          #boot-preloader .bp-dot::before {
+            animation: bp-ring 3s ease-out infinite;
+          }
+          #boot-preloader .bp-dot::after {
+            animation: bp-ring 3s ease-out infinite 1.5s;
+          }
+          #boot-preloader .bp-name {
+            font-size: 24px;
+            font-weight: 800;
+            color: #d1d4dc;
+            letter-spacing: -0.5px;
+          }
+          #boot-preloader .bp-bar-wrap {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+          }
+          #boot-preloader .bp-bar {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, transparent, #2ebd85, transparent);
+            border-radius: 3px;
+            animation: bp-bar 1.2s ease-in-out infinite;
+          }
+          #boot-preloader .bp-text {
+            font-size: 13px;
+            color: #787b86;
+            letter-spacing: 0.5px;
+            animation: bp-text 2s ease-in-out infinite;
+          }
+        </style>
+        <div class="bp-content">
+          <div class="bp-chart">
+            <svg viewBox="0 0 200 80">
+              <line x1="0" y1="20" x2="200" y2="20" class="grid" />
+              <line x1="0" y1="40" x2="200" y2="40" class="grid" />
+              <line x1="0" y1="60" x2="200" y2="60" class="grid" />
+              <g class="candles">
+                <line x1="20" y1="18" x2="20" y2="55" stroke="#2ebd85" stroke-width="1" />
+                <rect x="16" y="25" width="8" height="20" fill="#2ebd85" rx="1" />
+                <line x1="44" y1="22" x2="44" y2="62" stroke="#f6465d" stroke-width="1" />
+                <rect x="40" y="30" width="8" height="22" fill="#f6465d" rx="1" />
+                <line x1="68" y1="15" x2="68" y2="50" stroke="#2ebd85" stroke-width="1" />
+                <rect x="64" y="20" width="8" height="18" fill="#2ebd85" rx="1" />
+                <line x1="92" y1="10" x2="92" y2="48" stroke="#2ebd85" stroke-width="1" />
+                <rect x="88" y="15" width="8" height="22" fill="#2ebd85" rx="1" />
+                <line x1="116" y1="20" x2="116" y2="58" stroke="#f6465d" stroke-width="1" />
+                <rect x="112" y="28" width="8" height="20" fill="#f6465d" rx="1" />
+                <line x1="140" y1="25" x2="140" y2="65" stroke="#f6465d" stroke-width="1" />
+                <rect x="136" y="35" width="8" height="22" fill="#f6465d" rx="1" />
+                <line x1="164" y1="12" x2="164" y2="52" stroke="#2ebd85" stroke-width="1" />
+                <rect x="160" y="18" width="8" height="24" fill="#2ebd85" rx="1" />
+                <line x1="188" y1="8" x2="188" y2="45" stroke="#2ebd85" stroke-width="1" />
+                <rect x="184" y="12" width="8" height="20" fill="#2ebd85" rx="1" />
+              </g>
+              <polyline
+                points="16,35 40,40 64,28 88,25 112,38 136,45 160,30 184,22"
+                class="priceline"
+              />
+              <rect x="0" y="0" width="40" height="80" class="beam" />
+            </svg>
+          </div>
+          <div class="bp-brand">
+            <div
+              style="
+                width: 42px;
+                height: 42px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <div class="bp-dot"></div>
+            </div>
+            <span class="bp-name">Po Terminal</span>
+          </div>
+          <div class="bp-bar-wrap"><div class="bp-bar"></div></div>
+          <p class="bp-text">Loading...</p>
+        </div>
+      </div>
+      <script>
+        (function () {
+          var p = document.getElementById("boot-preloader");
+          if (!p) return;
+          var path = window.location.pathname;
+          var appRoutes = ["/terminal", "/only-graph", "/admin", "/copy-trader"];
+          var isApp = appRoutes.some(function (r) {
+            return path === r || path.indexOf(r + "/") === 0;
+          });
+          if (isApp) {
+            p.style.display = "flex";
+          } else {
+            p.parentNode.removeChild(p);
+          }
+        })();
+      </script>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

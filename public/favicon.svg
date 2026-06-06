@@ -1,0 +1,33 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="pulseGrad">
+      <stop offset="0%" stop-color="#2ebd85" stop-opacity="1">
+        <animate attributeName="stop-opacity" values="1;0.3;1" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#2ebd85" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Outer pulse ring 1 -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#2ebd85" stroke-width="1" opacity="0">
+    <animate attributeName="r" values="20;32;20" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0;0.7" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Outer pulse ring 2 -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#2ebd85" stroke-width="1" opacity="0">
+    <animate attributeName="r" values="20;32;20" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;0;0.7" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Glow background -->
+  <circle cx="32" cy="32" r="16" fill="url(#pulseGrad)">
+    <animate attributeName="r" values="16;18;16" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main icon circle -->
+  <circle cx="32" cy="32" r="12" fill="#2ebd85">
+    <animate attributeName="r" values="12;13;12" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.9;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+</svg>

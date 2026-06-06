@@ -1,0 +1,69 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync files to server
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude 'dist' \
+            --exclude '.env' \
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/
+
+      - name: Build and deploy on server
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
+          set -euo pipefail
+          cd "${{ secrets.DEPLOY_PATH }}"
+          export PNPM_HOME="$HOME/.local/share/pnpm"
+          export PATH="$PNPM_HOME:$PATH"
+          
+          
+          # Install pnpm if not installed
+          if ! command -v pnpm &> /dev/null; then
+            echo "Installing pnpm..."
+            curl -fsSL https://get.pnpm.io/install.sh | sh -
+          fi
+
+          echo "Node version: $(node -v)"
+          echo "pnpm version: $(pnpm -v)"
+          
+          # Install dependencies and build a fresh release before swapping.
+          echo "Installing dependencies..."
+          pnpm install --frozen-lockfile
+          
+          echo "Building project..."
+          rm -rf dist_next .vite
+          pnpm exec tsc -b
+          pnpm exec vite build --outDir dist_next
+          rm -rf dist
+          mv dist_next dist
+          
+          echo "Deployment completed successfully!"
+          ENDSSH
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

@@ -1,0 +1,209 @@
+/* ═══════════════════════════════════════════════
+   Global Reset & Base
+   ═══════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ─── Palette ─── */
+  --bg-primary: #0b0e17;
+  --bg-secondary: #141722;
+  --bg-card: #1b1e2e;
+  --bg-card-hover: #222538;
+  --bg-elevated: #252839;
+  --bg-input: #0f1219;
+
+  --border-default: rgba(255, 255, 255, 0.06);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-accent: rgba(46, 189, 133, 0.25);
+
+  --accent: #2ebd85;
+  --accent-hover: #36d399;
+  --accent-muted: rgba(46, 189, 133, 0.15);
+
+  --danger: #f6465d;
+  --danger-muted: rgba(246, 70, 93, 0.15);
+
+  --text-primary: #eaecef;
+  --text-secondary: #848e9c;
+  --text-muted: #5e6673;
+
+  --up: #2ebd85;
+  --down: #f6465d;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 64px rgba(0, 0, 0, 0.7);
+  --shadow-btn: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ═══════════════════════
+   Scrollbar
+   ═══════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ═══════════════════════
+   Form elements
+   ═══════════════════════ */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+}
+
+/* Prevent iOS Safari zoom on input focus (requires font-size >= 16px) */
+input,
+select,
+textarea {
+  font-size: max(16px, 1em) !important;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23848e9c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px !important;
+}
+
+select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 6px rgba(46, 189, 133, 0.4);
+  transition: transform var(--transition-fast);
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+input[type="color"]:hover {
+  border-color: var(--accent);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+/* ═══════════════════════
+   Animations
+   ═══════════════════════ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+#drawing-toolbar {
+  margin-top: 35px;
+}

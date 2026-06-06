@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /blog
+Allow: /blog/*
+
+Disallow: /terminal
+Disallow: /only-graph
+Disallow: /admin
+Disallow: /copy-trader
+Disallow: /auth/
+
+Sitemap: https://po-terminal.com/sitemap.xml

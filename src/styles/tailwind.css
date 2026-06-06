@@ -1,0 +1,6 @@
+@import "react-toastify/dist/ReactToastify.css";
+@import "../pages/shared/styles/pages.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
