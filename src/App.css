@@ -9694,38 +9694,40 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-  padding: 4px 10px 4px 6px;
+  backdrop-filter: blur(16px);
+  background: rgba(126, 139, 158, 0.08);
+  border: 1px solid rgba(126, 139, 158, 0.08);
+  border-radius: 32px;
+  padding: 6px;
+  padding-right: 12px;
   cursor: pointer;
   color: #fff;
   transition: all 0.15s;
-  font-size: 12px;
-  height: 32px;
+  font-size: 14px;
+  height: 44px;
 }
 .account-switcher__trigger:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
 }
 .account-switcher__mode {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   flex-shrink: 0;
 }
 .account-switcher__mode--demo {
-  background: rgba(46, 189, 133, 0.2);
-  color: #2ebd85;
+  background: rgba(128, 255, 204, 0.08);
+  color: #80ffcc;
 }
 .account-switcher__mode--real {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  background: rgba(237, 184, 88, 0.08);
+  color: #edb858;
 }
 .account-switcher__info {
   display: flex;
@@ -9744,8 +9746,9 @@
   white-space: nowrap;
 }
 .account-switcher__bal {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 14px;
+  color: var(--white);
+  font-weight: 500;
 }
 .account-switcher__no-acc {
   font-size: 11px;
@@ -9754,6 +9757,7 @@
 .account-switcher__chevron {
   opacity: 0.4;
   flex-shrink: 0;
+  margin-left: 6px;
 }
 
 /* ─── Dropdown ─── */
@@ -9761,13 +9765,13 @@
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  width: 240px;
-  background: #1e2133;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  width: 332px;
+  backdrop-filter: blur(32px);
+  background: rgba(29, 29, 29, 0.32);
+  border: 1px solid rgba(43, 43, 43, 0.32);
+  border-radius: 20px;
+  padding: 4px;
   z-index: 1000;
-  padding: 8px;
   animation: acDropIn 0.15s ease-out;
 }
 
@@ -9785,13 +9789,15 @@
 .ac-portal__sheet {
   width: 100%;
   max-width: 400px;
-  background: #1e2133;
-  border-radius: 16px 16px 0 0;
-  padding: 8px 16px 24px;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+  background: rgba(29, 29, 29, 0.32);
+  backdrop-filter: blur(32px);
+  border-radius: 20px 20px 0 0;
+  padding: 0 0 8px 0;
+  /* box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4); */
   max-height: 70vh;
   max-height: 70dvh;
   overflow-y: auto;
+  border: 1px solid rgba(43, 43, 43, 0.32);
 }
 @keyframes acDropIn {
   from {
@@ -9807,46 +9813,114 @@
 .account-switcher__mode-toggle {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
+  /* gap: 4px; */
+  padding: 0 4px;
+  /* background: rgba(255, 255, 255, 0.04); */
+  /* border-radius: 8px; */
 }
 .account-switcher__mode-btn {
   flex: 1;
-  padding: 6px;
+  padding: 14px;
   border: none;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 16px;
   font-weight: 600;
   cursor: pointer;
   background: transparent;
   color: rgba(255, 255, 255, 0.5);
   transition: all 0.15s;
+  border: 1px solid transparent;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
+
+.account-switcher__mode-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+}
+
+.account-switcher__mode-letter {
+  border-radius: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.28571;
+  text-align: center;
+}
+
+.account-switcher__mode-letter--demo {
+  color: #80ffcc;
+  background: rgba(128, 255, 204, 0.08);
+}
+
+.account-switcher__mode-letter--real {
+  color: #edb858;
+  background: rgba(237, 184, 88, 0.08);
+}
+
+.account-switcher__mode-bal {
+  width: 100%;
+  background: rgba(56, 67, 82, 0.32);
+  border-radius: 25px;
+  padding: 6px 8px;
+
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.14286;
+  text-align: center;
+  color: #bfbfbf;
+}
+
 .account-switcher__mode-btn:hover {
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(128, 178, 255, 0.04);
 }
+
 .account-switcher__mode-btn--active {
-  background: rgba(46, 189, 133, 0.15);
-  color: #2ebd85;
+  background: rgba(128, 178, 255, 0.04);
+  border-color: rgba(128, 178, 255, 0.08);
+}
+
+.account-switcher__mode-btn--active .account-switcher__mode-bal {
+  background: rgba(128, 178, 255, 0.16);
+  color: #80b2ff;
 }
 
 .account-switcher__eye-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 52px;
+  height: auto;
   border: none;
-  border-radius: 6px;
+  border-radius: 16px;
   background: transparent;
   color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
   transition: all 0.15s;
+
+  flex: 0 1 52px;
+  align-self: stretch;
 }
+
+.account-switcher__eye-btn svg {
+  font-size: 24px;
+  color: #9eadc3;
+}
+
 .account-switcher__eye-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.7);
@@ -9865,6 +9939,7 @@
   max-height: 200px;
   overflow-y: auto;
 }
+
 .account-switcher__item {
   display: flex;
   align-items: center;
@@ -9880,13 +9955,16 @@
   text-align: left;
   width: 100%;
 }
+
 .account-switcher__item:hover {
   background: rgba(255, 255, 255, 0.06);
 }
+
 .account-switcher__item--active {
   background: rgba(46, 189, 133, 0.08);
   color: #fff;
 }
+
 .account-switcher__item-dot {
   width: 8px;
   height: 8px;
@@ -9894,9 +9972,11 @@
   background: rgba(255, 255, 255, 0.15);
   flex-shrink: 0;
 }
+
 .account-switcher__item-dot--ok {
   background: #2ebd85;
 }
+
 .account-switcher__item-email {
   flex: 1;
   overflow: hidden;
@@ -9959,6 +10039,12 @@
 }
 .account-switcher__add--danger .account-switcher__add-icon {
   background: rgba(246, 70, 93, 0.15);
+}
+
+@media (max-width: 600px) {
+  .account-switcher__mode-toggle {
+    padding: 4px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════

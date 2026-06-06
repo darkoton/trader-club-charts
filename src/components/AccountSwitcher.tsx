@@ -13,6 +13,8 @@ import { betterSocket } from '../api/betterSocket';
 import type { BalanceUpdateEvent, BalanceChangedEvent } from '../api/betterSocket';
 import { useI18n } from '../i18n';
 
+import EyeIcon from '../assets/icons/eye.svg?react';
+
 interface AccountSwitcherProps {
   selectedAccount: BetterAccount | null;
   isDemo: boolean;
@@ -95,11 +97,16 @@ export function AccountSwitcher({
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const portalRef = useRef<HTMLDivElement>(null);
+  const [showBalancePopup, setShowBalancePopup] = useState(false);
 
   // Multi-account UI is intentionally disabled for all roles.
   const multiAccountEnabled = false;
   // Admin flag is kept for compatibility with access-dependent behavior.
   const isAdmin = (() => { try { return localStorage.getItem('tc_is_admin') === '1'; } catch { return false; } })();
+
+  const closeBalancePopup = useCallback(() => {
+    setShowBalancePopup(false);
+  }, []);
 
   /* ─── Email visibility toggle (persisted in localStorage) ─── */
   const [hideEmail, setHideEmail] = useState(() => localStorage.getItem('tc_hide_email') === '1');
@@ -199,7 +206,7 @@ export function AccountSwitcher({
     <div className="account-switcher" ref={ref}>
       <button
         className="account-switcher__trigger"
-        onClick={() => setOpen(!open)}
+        onClick={() => {setOpen(!open); setShowBalancePopup(true);}}
       >
         <span className={`account-switcher__mode${isDemo ? ' account-switcher__mode--demo' : ' account-switcher__mode--real'}`}>
           {isDemo ? 'D' : 'R'}
@@ -207,7 +214,6 @@ export function AccountSwitcher({
         <span className="account-switcher__info">
           {selectedAccount ? (
             <>
-              <span className="account-switcher__email">{isDemo ? 'Demo' : 'Real'}</span>
               {displayBal !== null && (
                 <span className="account-switcher__bal">{currencySymbol(currentBal?.currencies?.[isDemo ? 'demo' : 'real'])}{displayBal.toFixed(2)}</span>
               )}
@@ -216,8 +222,8 @@ export function AccountSwitcher({
             <span className="account-switcher__no-acc">{t.betNoAccount}</span>
           )}
         </span>
-        <svg className="account-switcher__chevron" width="10" height="6" viewBox="0 0 10 6" fill="currentColor">
-          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        <svg className="account-switcher__chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.96004 4.47501L6.70004 7.73501C6.31504 8.12001 5.68504 8.12001 5.30004 7.73501L2.04004 4.47501" stroke="currentColor" strokeOpacity="0.48" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
 
@@ -231,13 +237,15 @@ export function AccountSwitcher({
                 className={`account-switcher__mode-btn${isDemo ? ' account-switcher__mode-btn--active' : ''}`}
                 onClick={() => onToggleDemo(true)}
               >
-                Demo
+                <span className="account-switcher__mode-top"><span className="account-switcher__mode-letter account-switcher__mode-letter--demo">D</span>Demo</span>
+                <span className="account-switcher__mode-bal">$33425.99</span>
               </button>
               <button
                 className={`account-switcher__mode-btn${!isDemo ? ' account-switcher__mode-btn--active' : ''}`}
                 onClick={() => onToggleDemo(false)}
               >
-                Real
+                <span className="account-switcher__mode-top"><span className="account-switcher__mode-letter account-switcher__mode-letter--real">R</span> Real</span>
+                <span className="account-switcher__mode-bal">$33425.99</span>
               </button>
               <button
                 type="button"
@@ -245,11 +253,11 @@ export function AccountSwitcher({
                 onClick={toggleHideEmail}
                 title={hideEmail ? 'Show emails' : 'Hide emails'}
               >
-                {hideEmail ? '🙈' : '👁'}
+                {hideEmail ? '🙈' : <EyeIcon/>}
               </button>
             </div>
 
-            <div className="account-switcher__sep" />
+            {/* <div className="account-switcher__sep" /> */}
 
             {/* Account list (multi-accounting) */}
             {isAdmin && multiAccountEnabled && (<>
@@ -306,11 +314,15 @@ export function AccountSwitcher({
           </>
         );
 
-        if (isMobile) {
+        if (isMobile && showBalancePopup) {
           return createPortal(
             <div className="ac-portal" onClick={() => setOpen(false)}>
               <div className="ac-portal__sheet" ref={portalRef} onClick={(e) => e.stopPropagation()}>
                 <div className="portal-sheet__handle" />
+                <div className="portal-sheet__close-header">
+                  <span className="portal-sheet__close-title">Баланс</span>
+                  <button className="portal-sheet__close-btn" onClick={closeBalancePopup}>✕</button>
+                  </div>
                 {dropdownContent}
               </div>
             </div>,
