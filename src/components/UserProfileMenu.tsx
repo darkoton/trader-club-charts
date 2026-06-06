@@ -13,8 +13,15 @@ import { useI18n, LOCALE_LABELS, LOCALE_FLAGS, type Locale } from '../i18n';
 import { storageService } from '../services/storage';
 import type { AccountStatus } from '../types/accountStatus';
 import { ACCOUNT_STATUS_BONUSES } from '../types/accountStatus';
-import { CopyTradingIcon } from '../utils/icons';
 import routes from '../configs/routes';
+
+import UserIcon from '../assets/icons/user.svg?react';
+import CopyIcon from '../assets/icons/copy.svg?react';
+import CupIcon from '../assets/icons/cup.svg?react';
+import LanguageIcon from '../assets/icons/language.svg?react';
+import LogoutIcon from '../assets/icons/logout.svg?react';
+import StatsIcon from '../assets/icons/stats.svg?react';
+import TradeIcon from '../assets/icons/trade.svg?react';
 
 /* ─── Constants ─── */
 const ALL_LOCALES: Locale[] = Object.keys(LOCALE_LABELS) as Locale[];
@@ -197,12 +204,15 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
       {/* ─── Avatar trigger ─── */}
       <button className="upm__trigger" onClick={() => { setOpen((v) => !v); setLangOpen(false); setStatusOpen(false); }} title={displayName}>
         {showAvatar ? (
-          <img
+          <>
+          {/* <img
             className="upm__avatar"
             src={profile!.avatar_url!}
             alt={displayName}
             onError={() => setAvatarError(true)}
-          />
+          /> */}
+          <UserIcon className="upm__avatar"/>
+          </>
         ) : (
           <span className="upm__initials">{initials}</span>
         )}
@@ -215,7 +225,10 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
           <div className="upm__card">
             <div className="upm__card-avatar">
               {showAvatar ? (
-                <img src={profile!.avatar_url!} alt="" onError={() => setAvatarError(true)} />
+                <>
+                {/* <img src={profile!.avatar_url!} alt="" onError={() => setAvatarError(true)} /> */}
+                <UserIcon/>
+                </>
               ) : (
                 <span>{initials}</span>
               )}
@@ -231,10 +244,14 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
 
           {/* Language selector row */}
           <button className="upm__row" onClick={() => setLangOpen((v) => !v)}>
-            <span className="upm__row-icon">🌐</span>
+            <span className="upm__row-icon"><LanguageIcon /></span>
             <span className="upm__row-label">{t.language}</span>
             <span className="upm__row-value">{LOCALE_FLAGS[locale]} {LOCALE_LABELS[locale]}</span>
-            <span className={`upm__chevron${langOpen ? ' upm__chevron--open' : ''}`}>›</span>
+            <span className={`upm__chevron${langOpen ? ' upm__chevron--open' : ''}`}>
+              <svg width="1em" height="1em" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.45502 9.96004L7.71502 6.70004C8.10002 6.31504 8.10002 5.68504 7.71502 5.30004L4.45502 2.04004" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
           </button>
 
           {/* Language sub-panel */}
@@ -256,7 +273,7 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
 
           {/* Account Status selector */}
           <button className="upm__row" onClick={() => setStatusOpen((v) => !v)}>
-            <span className="upm__row-icon">👤</span>
+            <span className="upm__row-icon"><UserIcon /></span>
             <span className="upm__row-label">{t.accountStatus}</span>
             <span className="upm__row-value">
               {accountStatus === 'standard' && t.statusStandard}
@@ -266,7 +283,11 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
               {accountStatus === 'vipElite' && t.statusVipElite}
               {' '}(+{ACCOUNT_STATUS_BONUSES[accountStatus]}%)
             </span>
-            <span className={`upm__chevron${statusOpen ? ' upm__chevron--open' : ''}`}>›</span>
+            <span className={`upm__chevron${statusOpen ? ' upm__chevron--open' : ''}`}>
+              <svg width="1em" height="1em" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.45502 9.96004L7.71502 6.70004C8.10002 6.31504 8.10002 5.68504 7.71502 5.30004L4.45502 2.04004" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+</span>
           </button>
 
           {/* Account Status sub-panel */}
@@ -316,7 +337,7 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
             <>
               <div className="upm__sep" />
               <button className="upm__row" onClick={() => { onOpenAccountStats(); setOpen(false); }}>
-                <span className="upm__row-icon">📈</span>
+                <span className="upm__row-icon"><StatsIcon /></span>
                 <span className="upm__row-label">{t.accountStats}</span>
               </button>
             </>
@@ -326,7 +347,7 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
             <>
               <div className="upm__sep" />
               <button className="upm__row" onClick={() => { onOpenTradingTop(); setOpen(false); }}>
-                <span className="upm__row-icon">🏆</span>
+                <span className="upm__row-icon"><CupIcon /></span>
                 <span className="upm__row-label">{t.top100Title}</span>
               </button>
             </>
@@ -337,7 +358,7 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
             <>
               <div className="upm__sep" />
               <button className="upm__row" onClick={() => { onOpenCopyTrading(); setOpen(false); }}>
-                <CopyTradingIcon className="upm__row-icon upm__row-icon--svg" />
+                <CopyIcon className="upm__row-icon upm__row-icon--svg" />
                 <span className="upm__row-label">{t.ctTitle}</span>
               </button>
             </>
@@ -348,14 +369,10 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
             <>
               <div className="upm__sep" />
               <button className="upm__row" onClick={() => onToggleBetting(!showBetting)}>
-                <span className="upm__row-icon">📊</span>
+                <span className="upm__row-icon"><TradeIcon/></span>
                 <span className="upm__row-label">{t.showBetting}</span>
                 <span className={`upm__toggle${showBetting ? ' upm__toggle--on' : ''}`}>
-                  {showBetting
-                    ? <span className="upm__toggle-label upm__toggle-label--on">ON</span>
-                    : <span className="upm__toggle-label upm__toggle-label--off">OFF</span>
-                  }
-                  <span className="upm__toggle-knob" />
+                <span className="upm__toggle-knob" />
                 </span>
               </button>
             </>
@@ -364,7 +381,7 @@ export function UserProfileMenu({ onOpenCopyTrading, onOpenAccountStats, onOpenT
           <>
             <div className="upm__sep" />
             <button className="upm__row upm__row--danger" onClick={handleLogout}>
-              <span className="upm__row-icon">↩</span>
+              <span className="upm__row-icon"><LogoutIcon /></span>
               <span className="upm__row-label">{t.logout}</span>
             </button>
           </>
