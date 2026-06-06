@@ -596,7 +596,7 @@ function ChartCard({
         catMap.set(c.category, c.category_icon);
       }
     });
-    
+
     // Custom category order
     const categoryOrder = [
       'currency', 'forex',           // Валюты
@@ -605,7 +605,7 @@ function ChartCard({
       'stocks', 'stock', 'shares',    // Акции
       'indices', 'index',             // Индексы
     ];
-    
+
     return [...catMap.entries()]
       .sort(([a], [b]) => {
         const indexA = categoryOrder.indexOf(a.toLowerCase());
@@ -784,473 +784,473 @@ function ChartCard({
         className={`chart-card__content-row${isMobile ? ' chart-card__content-row--compact' : ''}`}
         style={isMobile ? undefined : { flexDirection: 'row' }}
       >
-      {/* Chart body — fills main area */}
-      <div className="chart-card__body">
-        <TVChart
-          ref={chartRef}
-          currency={config.currency}
-          timeframe={config.timeframe}
-          activeIndicators={config.activeIndicators}
-          indicatorParams={config.indicatorParams}
-          autoScroll={autoScroll}
-          locale={appLocale}
-          activeBets={activeBets}
-          balanceCurrency={balanceCurrency}
-          onOpenCopyTrading={onOpenCopyTrading}
-              onOpenAccountStats={onOpenAccountStats}
-              onOpenTradingTop={onOpenTradingTop}
-          onOpenWebApp={onOpenWebApp}
-          shortcutPrevKey={navBindings.prevKey}
-          shortcutNextKey={navBindings.nextKey}
-          onPrevCurrencyShortcut={handlePrevCurrencyShortcut}
-          onNextCurrencyShortcut={handleNextCurrencyShortcut}
-        />
+        {/* Chart body — fills main area */}
+        <div className="chart-card__body">
+          <TVChart
+            ref={chartRef}
+            currency={config.currency}
+            timeframe={config.timeframe}
+            activeIndicators={config.activeIndicators}
+            indicatorParams={config.indicatorParams}
+            autoScroll={autoScroll}
+            locale={appLocale}
+            activeBets={activeBets}
+            balanceCurrency={balanceCurrency}
+            onOpenCopyTrading={onOpenCopyTrading}
+            onOpenAccountStats={onOpenAccountStats}
+            onOpenTradingTop={onOpenTradingTop}
+            onOpenWebApp={onOpenWebApp}
+            shortcutPrevKey={navBindings.prevKey}
+            shortcutNextKey={navBindings.nextKey}
+            onPrevCurrencyShortcut={handlePrevCurrencyShortcut}
+            onNextCurrencyShortcut={handleNextCurrencyShortcut}
+          />
 
-        {/* ── Overlay toolbar (semi-transparent, on top of chart) ── */}
-        <div className="chart-overlay">
-          <div className="chart-overlay__left">
-            {/* Drag handle */}
-            {dragEnabled && (
-              <div
-                className="chart-card__drag-handle"
-                title="Drag to reorder"
-                data-card-drag-handle="true"
-              >
-                <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor" opacity="0.4">
-                  <circle cx="2" cy="2" r="1.5"/><circle cx="8" cy="2" r="1.5"/>
-                  <circle cx="2" cy="8" r="1.5"/><circle cx="8" cy="8" r="1.5"/>
-                  <circle cx="2" cy="14" r="1.5"/><circle cx="8" cy="14" r="1.5"/>
-                </svg>
+          {/* ── Overlay toolbar (semi-transparent, on top of chart) ── */}
+          <div className="chart-overlay">
+            <div className="chart-overlay__left">
+              {/* Drag handle */}
+              {dragEnabled && (
+                <div
+                  className="chart-card__drag-handle"
+                  title="Drag to reorder"
+                  data-card-drag-handle="true"
+                >
+                  <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor" opacity="0.4">
+                    <circle cx="2" cy="2" r="1.5" /><circle cx="8" cy="2" r="1.5" />
+                    <circle cx="2" cy="8" r="1.5" /><circle cx="8" cy="8" r="1.5" />
+                    <circle cx="2" cy="14" r="1.5" /><circle cx="8" cy="14" r="1.5" />
+                  </svg>
+                </div>
+              )}
+
+              {/* Currency selector */}
+              <div className="chart-card__currency-wrap" ref={dropdownRef}>
+                <button
+                  className="chart-card__currency-btn"
+                  onClick={() => {
+                    if (!showCurrencyPopup) {
+                      const rect = dropdownRef.current?.getBoundingClientRect();
+                      if (rect) setCurrencyRect({ top: rect.bottom + 4, left: rect.left });
+                    }
+                    setShowCurrencyPopup(!showCurrencyPopup);
+                    setCurrencySearch('');
+                  }}
+                >
+                  <span className={`chart-card__dot${config.currency ? '' : ' chart-card__dot--inactive'}`} />
+                  <span className="chart-card__name">{displayName}</span>
+                  {currentDisplayPayout !== undefined && (
+                    <span className={`chart-card__profit ${currentDisplayPayout >= 0 ? 'chart-card__profit--up' : 'chart-card__profit--down'}`}>
+                      {currentDisplayPayout.toFixed(0)}%
+                    </span>
+                  )}
+                  <svg className="chart-card__chevron" width="10" height="6" viewBox="0 0 10 6" fill="currentColor">
+                    <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                  </svg>
+                </button>
               </div>
-            )}
 
-            {/* Currency selector */}
-            <div className="chart-card__currency-wrap" ref={dropdownRef}>
-              <button
-                className="chart-card__currency-btn"
-                onClick={() => {
-                  if (!showCurrencyPopup) {
-                    const rect = dropdownRef.current?.getBoundingClientRect();
-                    if (rect) setCurrencyRect({ top: rect.bottom + 4, left: rect.left });
-                  }
-                  setShowCurrencyPopup(!showCurrencyPopup);
-                  setCurrencySearch('');
-                }}
-              >
-                <span className={`chart-card__dot${config.currency ? '' : ' chart-card__dot--inactive'}`} />
-                <span className="chart-card__name">{displayName}</span>
-                {currentDisplayPayout !== undefined && (
-                  <span className={`chart-card__profit ${currentDisplayPayout >= 0 ? 'chart-card__profit--up' : 'chart-card__profit--down'}`}>
-                    {currentDisplayPayout.toFixed(0)}%
-                  </span>
-                )}
-                <svg className="chart-card__chevron" width="10" height="6" viewBox="0 0 10 6" fill="currentColor">
-                  <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-                </svg>
-              </button>
-            </div>
+              {/* Timeframe dropdown */}
+              <div className="chart-overlay__tf-wrap" ref={tfDropdownRef}>
+                <button
+                  className="chart-overlay__tf-btn"
+                  onClick={() => {
+                    if (!showTfDropdown) {
+                      const rect = tfDropdownRef.current?.getBoundingClientRect();
+                      if (rect) setTfRect({ top: rect.bottom + 4, left: rect.left });
+                    }
+                    setShowTfDropdown(!showTfDropdown);
+                  }}
+                >
+                  {currentTfLabel}
+                  <svg width="1em" height="1em" viewBox="0 0 8 5" fill="none">
+                    <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
 
-            {/* Timeframe dropdown */}
-            <div className="chart-overlay__tf-wrap" ref={tfDropdownRef}>
-              <button
-                className="chart-overlay__tf-btn"
-                onClick={() => {
-                  if (!showTfDropdown) {
-                    const rect = tfDropdownRef.current?.getBoundingClientRect();
-                    if (rect) setTfRect({ top: rect.bottom + 4, left: rect.left });
-                  }
-                  setShowTfDropdown(!showTfDropdown);
-                }}
-              >
-                {currentTfLabel}
-                <svg width="8" height="5" viewBox="0 0 8 5" fill="none">
-                  <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Indicator quick-toggle (toolbar-style) */}
-            <div className="chart-card__indicator-wrap" ref={indicatorPanelRef}>
-              <button
-                className={`chart-overlay__tool-btn${activeIndicatorCount > 0 ? ' chart-overlay__tool-btn--accent' : ''}`}
-                onClick={() => setShowIndicatorPanel(!showIndicatorPanel)}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                </svg>
-                {activeIndicatorCount > 0 && (
-                  <span className="chart-overlay__tool-badge">{activeIndicatorCount}</span>
-                )}
-              </button>
-              {showIndicatorPanel && createPortal(
-                <div className="chart-card__indicator-panel-backdrop" onClick={() => setShowIndicatorPanel(false)}>
-                  <div className="chart-card__indicator-panel" onClick={e => e.stopPropagation()}>
-                    <div className="chart-card__indicator-panel-title">{t.indicators}</div>
-                    {Object.entries(INDICATOR_REGISTRY).map(([key, entry]) => {
-                      const isActive = !!config.activeIndicators[key];
-                      return (
-                        <button
-                          key={key}
-                          className={`chart-card__ind-toggle${isActive ? ' chart-card__ind-toggle--active' : ''}`}
-                          onClick={() => toggleIndicator(key)}
-                        >
-                          <span
-                            className="chart-card__ind-tag"
-                            style={{ background: isActive ? `${entry.color}33` : 'transparent', color: entry.color }}
+              {/* Indicator quick-toggle (toolbar-style) */}
+              <div className="chart-card__indicator-wrap" ref={indicatorPanelRef}>
+                <button
+                  className={`chart-overlay__tool-btn${activeIndicatorCount > 0 ? ' chart-overlay__tool-btn--accent' : ''}`}
+                  onClick={() => setShowIndicatorPanel(!showIndicatorPanel)}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                  {activeIndicatorCount > 0 && (
+                    <span className="chart-overlay__tool-badge">{activeIndicatorCount}</span>
+                  )}
+                </button>
+                {showIndicatorPanel && createPortal(
+                  <div className="chart-card__indicator-panel-backdrop" onClick={() => setShowIndicatorPanel(false)}>
+                    <div className="chart-card__indicator-panel" onClick={e => e.stopPropagation()}>
+                      <div className="chart-card__indicator-panel-title">{t.indicators}</div>
+                      {Object.entries(INDICATOR_REGISTRY).map(([key, entry]) => {
+                        const isActive = !!config.activeIndicators[key];
+                        return (
+                          <button
+                            key={key}
+                            className={`chart-card__ind-toggle${isActive ? ' chart-card__ind-toggle--active' : ''}`}
+                            onClick={() => toggleIndicator(key)}
                           >
-                            {entry.tag}
-                          </span>
-                          <span className="chart-card__ind-name">{entry.meta.name}</span>
-                          <span className="chart-card__ind-check">{isActive ? '✓' : ''}</span>
+                            <span
+                              className="chart-card__ind-tag"
+                              style={{ background: isActive ? `${entry.color}33` : 'transparent', color: entry.color }}
+                            >
+                              {entry.tag}
+                            </span>
+                            <span className="chart-card__ind-name">{entry.meta.name}</span>
+                            <span className="chart-card__ind-check">{isActive ? '✓' : ''}</span>
+                          </button>
+                        );
+                      })}
+                      <div className="chart-card__ind-panel-footer">
+                        <button
+                          className="chart-card__ind-settings-btn"
+                          onClick={() => {
+                            setShowIndicatorPanel(false);
+                            setTvIndicatorsOpen(true);
+                            setTvStudySearch('');
+                          }}
+                        >
+                          📊 {t.tvIndicators}
                         </button>
-                      );
-                    })}
-                    <div className="chart-card__ind-panel-footer">
-                      <button
-                        className="chart-card__ind-settings-btn"
-                        onClick={() => {
-                          setShowIndicatorPanel(false);
-                          setTvIndicatorsOpen(true);
-                          setTvStudySearch('');
+                        <button
+                          className="chart-card__ind-settings-btn"
+                          onClick={() => { setShowIndicatorPanel(false); onOpenSettings(config.id); }}
+                        >
+                          ⚙ {t.settings}
+                        </button>
+                      </div>
+                    </div>
+                  </div>,
+                  document.body
+                )}
+              </div>
+            </div>
+
+            <div className="chart-overlay__right">
+              {/* Close button */}
+              <button
+                className="chart-overlay__close-btn"
+                onClick={() => onRemoveChart(config.id)}
+                title={t.remove}
+              >✕</button>
+            </div>
+          </div>
+
+          {/* Low profit warning */}
+          {config.currencyInfo && currentDisplayPayout !== undefined && currentDisplayPayout < 70 && (
+            <div className="chart-card__low-profit">
+              <span className="chart-card__low-profit-icon">⚠</span>
+              <span className="chart-card__low-profit-text">
+                {t.lowProfit} ({currentDisplayPayout.toFixed(0)}%)
+              </span>
+            </div>
+          )}
+
+          {/* Currency dropdown portal */}
+          {showCurrencyPopup && createPortal(
+            <div className="currency-dropdown-portal" onClick={closeCurrencyPopup}>
+              <div
+                className="chart-card__dropdown"
+                style={currencyRect ? { position: 'fixed', top: currencyRect.top, left: currencyRect.left } : undefined}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Mobile drag handle + close header */}
+                <div className="portal-sheet__handle" />
+                <div className="portal-sheet__close-header">
+                  <span className="portal-sheet__close-title">{t.selectCurrency}</span>
+                  <button className="portal-sheet__close-btn" onClick={closeCurrencyPopup}>✕</button>
+                </div>
+                {/* Category icon bar */}
+                <div className="ccp-catbar">
+                  <button
+                    className={`ccp-catbar__btn${selectedCat === 'all' ? ' ccp-catbar__btn--active' : ''}`}
+                    onClick={() => handleSetCat('all')}
+                    title={t.all}
+                  >
+                    <span className="ccp-catbar__icon">🌐</span>
+                    <span className="ccp-catbar__label">{t.all}</span>
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.name}
+                      className={`ccp-catbar__btn${selectedCat === cat.name ? ' ccp-catbar__btn--active' : ''}`}
+                      onClick={() => handleSetCat(cat.name)}
+                      title={tCategory(cat.name)}
+                    >
+                      <span className="ccp-catbar__icon">{renderIcon(getCategoryIcon(cat.name, cat.icon), 32)}</span>
+                      <span className="ccp-catbar__label">{tCategory(cat.name)}</span>
+                    </button>
+                  ))}
+                </div>
+                {/* Right side: search + list */}
+                <div className="ccp-right">
+                  <div className="ccp-search">
+                    <input
+                      className="ccp-search__input"
+                      placeholder={t.search}
+                      value={currencySearch}
+                      onChange={(e) => setCurrencySearch(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <input
+                      className="ccp-search__profit"
+                      inputMode="numeric"
+                      placeholder="%"
+                      value={minPayoutFilter === 0 ? '' : String(minPayoutFilter)}
+                      onChange={(e) => handleSetMinPayoutFilter(e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      title={t.ccpMinPayout}
+                    />
+                    <button
+                      className={`ccp-search__fav${selectedCat === 'favorites' ? ' ccp-search__fav--active' : ''}`}
+                      onClick={() => handleSetCat(selectedCat === 'favorites' ? 'all' : 'favorites')}
+                      title={t.favorites}
+                    >★</button>
+                  </div>
+                  <div className="ccp-shortcuts" onClick={(e) => e.stopPropagation()}>
+                    <div className="ccp-shortcuts__group">
+                      <span className="ccp-shortcuts__label">{t.ccpPrevKey}</span>
+                      <input
+                        className="ccp-shortcuts__input"
+                        type="text"
+                        value={navBindings.prevKey}
+                        readOnly
+                        onKeyDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (e.key === 'Backspace' || e.key === 'Delete') {
+                            handleSetNavBinding('prevKey', 'ArrowLeft');
+                            return;
+                          }
+                          handleSetNavBinding('prevKey', e.key);
                         }}
-                      >
-                        📊 {t.tvIndicators}
-                      </button>
-                      <button
-                        className="chart-card__ind-settings-btn"
-                        onClick={() => { setShowIndicatorPanel(false); onOpenSettings(config.id); }}
-                      >
-                        ⚙ {t.settings}
-                      </button>
+                        title={t.ccpPrevKey}
+                      />
+                    </div>
+                    <div className="ccp-shortcuts__group">
+                      <span className="ccp-shortcuts__label">{t.ccpNextKey}</span>
+                      <input
+                        className="ccp-shortcuts__input"
+                        type="text"
+                        value={navBindings.nextKey}
+                        readOnly
+                        onKeyDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (e.key === 'Backspace' || e.key === 'Delete') {
+                            handleSetNavBinding('nextKey', 'ArrowRight');
+                            return;
+                          }
+                          handleSetNavBinding('nextKey', e.key);
+                        }}
+                        title={t.ccpNextKey}
+                      />
                     </div>
                   </div>
-                </div>,
-                document.body
-              )}
-            </div>
-          </div>
-
-          <div className="chart-overlay__right">
-            {/* Close button */}
-            <button
-              className="chart-overlay__close-btn"
-              onClick={() => onRemoveChart(config.id)}
-              title={t.remove}
-            >✕</button>
-          </div>
-        </div>
-
-        {/* Low profit warning */}
-        {config.currencyInfo && currentDisplayPayout !== undefined && currentDisplayPayout < 70 && (
-          <div className="chart-card__low-profit">
-            <span className="chart-card__low-profit-icon">⚠</span>
-            <span className="chart-card__low-profit-text">
-              {t.lowProfit} ({currentDisplayPayout.toFixed(0)}%)
-            </span>
-          </div>
-        )}
-
-        {/* Currency dropdown portal */}
-        {showCurrencyPopup && createPortal(
-          <div className="currency-dropdown-portal" onClick={closeCurrencyPopup}>
-            <div
-              className="chart-card__dropdown"
-              style={currencyRect ? { position: 'fixed', top: currencyRect.top, left: currencyRect.left } : undefined}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Mobile drag handle + close header */}
-              <div className="portal-sheet__handle" />
-              <div className="portal-sheet__close-header">
-                <span className="portal-sheet__close-title">{t.selectCurrency}</span>
-                <button className="portal-sheet__close-btn" onClick={closeCurrencyPopup}>✕</button>
-              </div>
-              {/* Category icon bar */}
-              <div className="ccp-catbar">
-                <button
-                  className={`ccp-catbar__btn${selectedCat === 'all' ? ' ccp-catbar__btn--active' : ''}`}
-                  onClick={() => handleSetCat('all')}
-                  title={t.all}
-                >
-                  <span className="ccp-catbar__icon">🌐</span>
-                  <span className="ccp-catbar__label">{t.all}</span>
-                </button>
-                {categories.map((cat) => (
-                  <button
-                    key={cat.name}
-                    className={`ccp-catbar__btn${selectedCat === cat.name ? ' ccp-catbar__btn--active' : ''}`}
-                    onClick={() => handleSetCat(cat.name)}
-                    title={tCategory(cat.name)}
-                  >
-                    <span className="ccp-catbar__icon">{renderIcon(getCategoryIcon(cat.name, cat.icon), 32)}</span>
-                    <span className="ccp-catbar__label">{tCategory(cat.name)}</span>
-                  </button>
-                ))}
-              </div>
-              {/* Right side: search + list */}
-              <div className="ccp-right">
-                <div className="ccp-search">
-                  <input
-                    className="ccp-search__input"
-                    placeholder={t.search}
-                    value={currencySearch}
-                    onChange={(e) => setCurrencySearch(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <input
-                    className="ccp-search__profit"
-                    inputMode="numeric"
-                    placeholder="%"
-                    value={minPayoutFilter === 0 ? '' : String(minPayoutFilter)}
-                    onChange={(e) => handleSetMinPayoutFilter(e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                    title={t.ccpMinPayout}
-                  />
-                  <button
-                    className={`ccp-search__fav${selectedCat === 'favorites' ? ' ccp-search__fav--active' : ''}`}
-                    onClick={() => handleSetCat(selectedCat === 'favorites' ? 'all' : 'favorites')}
-                    title={t.favorites}
-                  >★</button>
-                </div>
-                <div className="ccp-shortcuts" onClick={(e) => e.stopPropagation()}>
-                  <div className="ccp-shortcuts__group">
-                    <span className="ccp-shortcuts__label">{t.ccpPrevKey}</span>
-                    <input
-                      className="ccp-shortcuts__input"
-                      type="text"
-                      value={navBindings.prevKey}
-                      readOnly
-                      onKeyDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (e.key === 'Backspace' || e.key === 'Delete') {
-                          handleSetNavBinding('prevKey', 'ArrowLeft');
-                          return;
-                        }
-                        handleSetNavBinding('prevKey', e.key);
-                      }}
-                      title={t.ccpPrevKey}
-                    />
-                  </div>
-                  <div className="ccp-shortcuts__group">
-                    <span className="ccp-shortcuts__label">{t.ccpNextKey}</span>
-                    <input
-                      className="ccp-shortcuts__input"
-                      type="text"
-                      value={navBindings.nextKey}
-                      readOnly
-                      onKeyDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (e.key === 'Backspace' || e.key === 'Delete') {
-                          handleSetNavBinding('nextKey', 'ArrowRight');
-                          return;
-                        }
-                        handleSetNavBinding('nextKey', e.key);
-                      }}
-                      title={t.ccpNextKey}
-                    />
-                  </div>
-                </div>
-                {/* OTC / FOREX sub-filter — only for currency categories, below search */}
-                {showOtcTabs && (
-                  <div className="ccp-otc-tabs">
-                    {(['all', 'otc', 'forex'] as const).map((f) => (
-                      <button
-                        key={f}
-                        className={`ccp-otc-tab${otcFilter === f ? ' ccp-otc-tab--active' : ''}`}
-                        onClick={(e) => { e.stopPropagation(); handleSetOtcFilter(f); }}
-                      >
-                        {f === 'all' ? t.all : f === 'otc' ? t.ccpOtc : t.ccpForex}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div className="ccp-list" ref={ccpListRef}>
-                  {filteredCurrencies.length === 0 ? (
-                    <div className="ccp-empty">{t.currenciesNotFound}</div>
-                  ) : (
-                    filteredCurrencies.map((c) => {
-                      const isFav = favorites.includes(c.currency);
-                      const isActive = c.currency === config.currency;
-                      return (
-                        <div
-                          key={c.currency}
-                          className={`ccp-item${isActive ? ' ccp-item--active' : ''}`}
-                          onPointerUp={(e) => {
-                            if (e.pointerType === 'mouse') return;
-                            e.preventDefault();
-                            handleCurrencySelect(c);
-                          }}
-                          onClick={() => {
-                            if (isMobile) return;
-                            handleCurrencySelect(c);
-                          }}
+                  {/* OTC / FOREX sub-filter — only for currency categories, below search */}
+                  {showOtcTabs && (
+                    <div className="ccp-otc-tabs">
+                      {(['all', 'otc', 'forex'] as const).map((f) => (
+                        <button
+                          key={f}
+                          className={`ccp-otc-tab${otcFilter === f ? ' ccp-otc-tab--active' : ''}`}
+                          onClick={(e) => { e.stopPropagation(); handleSetOtcFilter(f); }}
                         >
-                          <button
-                            className={`ccp-item__fav${isFav ? ' ccp-item__fav--active' : ''}`}
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onPointerUp={(e) => e.stopPropagation()}
-                            onClick={(e) => { e.stopPropagation(); onToggleFavorite(c.currency); }}
-                          >{isFav ? '★' : '☆'}</button>
-                          <span className="ccp-item__icon">{renderIcon(getCurrencyDisplayIcon(c.category, c.icon, c.category_icon), 32)}</span>
-                          <span className="ccp-item__name">{c.currency}</span>
-                          {(() => {
-                            const payout = getCurrencyPayout(c);
-                            if (payout === undefined) return null;
-                            return <span className="ccp-item__profit">+{payout.toFixed(0)}%</span>;
-                          })()}
-                          <button
-                            className={`ccp-item__copy${copiedCurrency === c.currency ? ' ccp-item__copy--done' : ''}`}
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onPointerUp={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Strip OTC/otc suffix only for currency categories
-                              const isCurCat = CURRENCY_CATS.includes((c.category ?? '').toLowerCase());
-                              const clean = isCurCat ? c.currency.replace(/\s*OTC$/i, '').trim() : c.currency;
-                              navigator.clipboard.writeText(clean).catch(() => {});
-                              setCopiedCurrency(c.currency);
-                              setTimeout(() => setCopiedCurrency(null), 1500);
-                            }}
-                            title="Copy"
-                          >{copiedCurrency === c.currency ? '✓' : '⎘'}</button>
-                        </div>
-                      );
-                    })
+                          {f === 'all' ? t.all : f === 'otc' ? t.ccpOtc : t.ccpForex}
+                        </button>
+                      ))}
+                    </div>
                   )}
+                  <div className="ccp-list" ref={ccpListRef}>
+                    {filteredCurrencies.length === 0 ? (
+                      <div className="ccp-empty">{t.currenciesNotFound}</div>
+                    ) : (
+                      filteredCurrencies.map((c) => {
+                        const isFav = favorites.includes(c.currency);
+                        const isActive = c.currency === config.currency;
+                        return (
+                          <div
+                            key={c.currency}
+                            className={`ccp-item${isActive ? ' ccp-item--active' : ''}`}
+                            onPointerUp={(e) => {
+                              if (e.pointerType === 'mouse') return;
+                              e.preventDefault();
+                              handleCurrencySelect(c);
+                            }}
+                            onClick={() => {
+                              if (isMobile) return;
+                              handleCurrencySelect(c);
+                            }}
+                          >
+                            <button
+                              className={`ccp-item__fav${isFav ? ' ccp-item__fav--active' : ''}`}
+                              onPointerDown={(e) => e.stopPropagation()}
+                              onPointerUp={(e) => e.stopPropagation()}
+                              onClick={(e) => { e.stopPropagation(); onToggleFavorite(c.currency); }}
+                            >{isFav ? '★' : '☆'}</button>
+                            <span className="ccp-item__icon">{renderIcon(getCurrencyDisplayIcon(c.category, c.icon, c.category_icon), 32)}</span>
+                            <span className="ccp-item__name">{c.currency}</span>
+                            {(() => {
+                              const payout = getCurrencyPayout(c);
+                              if (payout === undefined) return null;
+                              return <span className="ccp-item__profit">+{payout.toFixed(0)}%</span>;
+                            })()}
+                            <button
+                              className={`ccp-item__copy${copiedCurrency === c.currency ? ' ccp-item__copy--done' : ''}`}
+                              onPointerDown={(e) => e.stopPropagation()}
+                              onPointerUp={(e) => e.stopPropagation()}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Strip OTC/otc suffix only for currency categories
+                                const isCurCat = CURRENCY_CATS.includes((c.category ?? '').toLowerCase());
+                                const clean = isCurCat ? c.currency.replace(/\s*OTC$/i, '').trim() : c.currency;
+                                navigator.clipboard.writeText(clean).catch(() => { });
+                                setCopiedCurrency(c.currency);
+                                setTimeout(() => setCopiedCurrency(null), 1500);
+                              }}
+                              title="Copy"
+                            >{copiedCurrency === c.currency ? '✓' : '⎘'}</button>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>,
-          document.body
-        )}
-        {/* {currencyCloseShield && createPortal(
+            </div>,
+            document.body
+          )}
+          {/* {currencyCloseShield && createPortal(
           <div className="currency-close-shield" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()} />,
           document.body
         )} */}
 
-        {/* TF dropdown portal */}
-        {showTfDropdown && createPortal(
-          <div className="tf-dropdown-portal" onClick={() => setShowTfDropdown(false)}>
-            <div
-              className="chart-overlay__tf-dropdown"
-              style={tfRect ? { position: 'fixed', top: tfRect.top, left: tfRect.left } : undefined}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Mobile drag handle + close header */}
-              <div className="portal-sheet__handle" />
-              <div className="portal-sheet__close-header">
-                <span className="portal-sheet__close-title">{t.timeframe}</span>
-                <button className="portal-sheet__close-btn" onClick={() => setShowTfDropdown(false)}>✕</button>
+          {/* TF dropdown portal */}
+          {showTfDropdown && createPortal(
+            <div className="tf-dropdown-portal" onClick={() => setShowTfDropdown(false)}>
+              <div
+                className="chart-overlay__tf-dropdown"
+                style={tfRect ? { position: 'fixed', top: tfRect.top, left: tfRect.left } : undefined}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Mobile drag handle + close header */}
+                <div className="portal-sheet__handle" />
+                <div className="portal-sheet__close-header">
+                  <span className="portal-sheet__close-title">{t.timeframe}</span>
+                  <button className="portal-sheet__close-btn" onClick={() => setShowTfDropdown(false)}>✕</button>
+                </div>
+                {TIMEFRAMES.map((tf) => (
+                  <button
+                    key={tf.value}
+                    className={`chart-overlay__tf-option${config.timeframe === tf.value ? ' chart-overlay__tf-option--active' : ''}`}
+                    onClick={() => { handleTimeframeChange(tf.value); setShowTfDropdown(false); }}
+                  >
+                    {tf.label}
+                  </button>
+                ))}
               </div>
-              {TIMEFRAMES.map((tf) => (
-                <button
-                  key={tf.value}
-                  className={`chart-overlay__tf-option${config.timeframe === tf.value ? ' chart-overlay__tf-option--active' : ''}`}
-                  onClick={() => { handleTimeframeChange(tf.value); setShowTfDropdown(false); }}
-                >
-                  {tf.label}
-                </button>
-              ))}
-            </div>
-          </div>,
-          document.body
-        )}
+            </div>,
+            document.body
+          )}
 
-        {/* TV Indicators custom portal modal */}
-        {tvIndicatorsOpen && createPortal(
-          <div className="tv-studies-modal-backdrop" onClick={() => { setTvIndicatorsOpen(false); setTvStudySearch(''); }}>
-            <div className="tv-studies-modal" onClick={e => e.stopPropagation()}>
-              <div className="tv-studies-modal__header">
-                <span className="tv-studies-modal__title">{t.tvIndicators}</span>
-                <button className="tv-studies-modal__close" onClick={() => { setTvIndicatorsOpen(false); setTvStudySearch(''); }}>✕</button>
-              </div>
-              <div className="tv-studies-modal__search-wrap">
-                <input
-                  className="tv-studies-modal__search"
-                  type="text"
-                  placeholder={t.searchIndicators}
-                  value={tvStudySearch}
-                  onChange={e => setTvStudySearch(e.target.value)}
-                />
-              </div>
-              {/* Active studies */}
-              {(() => {
-                void tvForceKey; // dependency: re-render when studies change
-                const active = chartRef.current?.getActiveStudies() || [];
-                if (active.length === 0) return null;
-                return (
-                  <div className="tv-studies-modal__section">
-                    <div className="tv-studies-modal__section-title">{t.activeStudies}</div>
-                    {active.map(s => (
-                      <button key={s.id} className="tv-studies-modal__item tv-studies-modal__item--active" onClick={() => {
-                        try { chartRef.current?.removeStudy(s.id); } catch { /* entity may already be removed */ }
-                        setTimeout(() => setTvForceKey(k => k + 1), 100);
-                      }}>
-                        <span className="tv-studies-modal__item-name">{s.name}</span>
-                        <span className="tv-studies-modal__item-remove">✕</span>
-                      </button>
-                    ))}
+          {/* TV Indicators custom portal modal */}
+          {tvIndicatorsOpen && createPortal(
+            <div className="tv-studies-modal-backdrop" onClick={() => { setTvIndicatorsOpen(false); setTvStudySearch(''); }}>
+              <div className="tv-studies-modal" onClick={e => e.stopPropagation()}>
+                <div className="tv-studies-modal__header">
+                  <span className="tv-studies-modal__title">{t.tvIndicators}</span>
+                  <button className="tv-studies-modal__close" onClick={() => { setTvIndicatorsOpen(false); setTvStudySearch(''); }}>✕</button>
+                </div>
+                <div className="tv-studies-modal__search-wrap">
+                  <input
+                    className="tv-studies-modal__search"
+                    type="text"
+                    placeholder={t.searchIndicators}
+                    value={tvStudySearch}
+                    onChange={e => setTvStudySearch(e.target.value)}
+                  />
+                </div>
+                {/* Active studies */}
+                {(() => {
+                  void tvForceKey; // dependency: re-render when studies change
+                  const active = chartRef.current?.getActiveStudies() || [];
+                  if (active.length === 0) return null;
+                  return (
+                    <div className="tv-studies-modal__section">
+                      <div className="tv-studies-modal__section-title">{t.activeStudies}</div>
+                      {active.map(s => (
+                        <button key={s.id} className="tv-studies-modal__item tv-studies-modal__item--active" onClick={() => {
+                          try { chartRef.current?.removeStudy(s.id); } catch { /* entity may already be removed */ }
+                          setTimeout(() => setTvForceKey(k => k + 1), 100);
+                        }}>
+                          <span className="tv-studies-modal__item-name">{s.name}</span>
+                          <span className="tv-studies-modal__item-remove">✕</span>
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
+                {/* All available studies */}
+                <div className="tv-studies-modal__section">
+                  <div className="tv-studies-modal__section-title">{t.allIndicators}</div>
+                  <div className="tv-studies-modal__list">
+                    {(() => {
+                      const all: TVStudyInfo[] = chartRef.current?.getStudiesList() || [];
+                      const q = tvStudySearch.toLowerCase();
+                      const filtered = q ? all.filter(s => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)) : all;
+                      if (filtered.length === 0) return <div className="tv-studies-modal__empty">{t.noResults}</div>;
+                      return filtered.map(s => (
+                        <button key={s.id} className="tv-studies-modal__item" onClick={() => {
+                          chartRef.current?.addStudy(s.name);
+                          setTimeout(() => setTvForceKey(k => k + 1), 100);
+                        }}>
+                          <span className="tv-studies-modal__item-name">{s.description || s.name}</span>
+                        </button>
+                      ));
+                    })()}
                   </div>
-                );
-              })()}
-              {/* All available studies */}
-              <div className="tv-studies-modal__section">
-                <div className="tv-studies-modal__section-title">{t.allIndicators}</div>
-                <div className="tv-studies-modal__list">
-                  {(() => {
-                    const all: TVStudyInfo[] = chartRef.current?.getStudiesList() || [];
-                    const q = tvStudySearch.toLowerCase();
-                    const filtered = q ? all.filter(s => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)) : all;
-                    if (filtered.length === 0) return <div className="tv-studies-modal__empty">{t.noResults}</div>;
-                    return filtered.map(s => (
-                      <button key={s.id} className="tv-studies-modal__item" onClick={() => {
-                        chartRef.current?.addStudy(s.name);
-                        setTimeout(() => setTvForceKey(k => k + 1), 100);
-                      }}>
-                        <span className="tv-studies-modal__item-name">{s.description || s.name}</span>
-                      </button>
-                    ));
-                  })()}
                 </div>
               </div>
-            </div>
-          </div>,
-          document.body
-        )}
-      </div>
+            </div>,
+            document.body
+          )}
+        </div>
 
-      {/* ─── Trading Panel (desktop: sidebar right, mobile: bottom overlay) ─── */}
-      {showTradingPanel && (
-        <TradingPanel
-          asset={config.currency}
-          apiName={config.currencyInfo?.api_name}
-          account={betterAccount}
-          isDemo={isBetDemo}
-          payout={currentDisplayPayout}
-          isMobile={isMobile}
-          hideHistory={hideHistory}
-          onBetsChange={setActiveBets}
-          getCurrentPrice={getCurrentPrice}
-          minTimeframe={poAsset?.min_timeframe}
-          maxTimeframe={poAsset?.max_timeframe}
-          assetNameMap={assetNameMap}
-          onSelectAsset={(assetName) => {
-            const cur = findCurrencyByAsset(currencies, assetName);
-            console.debug('[ChartGrid:panel] onSelectAsset:', assetName, '→ found:', cur?.currency ?? 'NOT FOUND', 'api_name:', cur?.api_name, 'currencies.length:', currencies.length);
-            if (cur) {
-              handleCurrencySelect(cur);
-            } else {
-              console.warn('[ChartGrid:panel] currency not found for asset:', assetName);
-            }
-          }}
-          onCycleAsset={cycleCurrency}
-          onOpenCopyTrading={onOpenCopyTrading}
-          onOpenAccountStats={onOpenAccountStats}
-          onOpenTradingTop={onOpenTradingTop}
-          onOpenWebApp={onOpenWebApp}
-        />
-      )}
+        {/* ─── Trading Panel (desktop: sidebar right, mobile: bottom overlay) ─── */}
+        {showTradingPanel && (
+          <TradingPanel
+            asset={config.currency}
+            apiName={config.currencyInfo?.api_name}
+            account={betterAccount}
+            isDemo={isBetDemo}
+            payout={currentDisplayPayout}
+            isMobile={isMobile}
+            hideHistory={hideHistory}
+            onBetsChange={setActiveBets}
+            getCurrentPrice={getCurrentPrice}
+            minTimeframe={poAsset?.min_timeframe}
+            maxTimeframe={poAsset?.max_timeframe}
+            assetNameMap={assetNameMap}
+            onSelectAsset={(assetName) => {
+              const cur = findCurrencyByAsset(currencies, assetName);
+              console.debug('[ChartGrid:panel] onSelectAsset:', assetName, '→ found:', cur?.currency ?? 'NOT FOUND', 'api_name:', cur?.api_name, 'currencies.length:', currencies.length);
+              if (cur) {
+                handleCurrencySelect(cur);
+              } else {
+                console.warn('[ChartGrid:panel] currency not found for asset:', assetName);
+              }
+            }}
+            onCycleAsset={cycleCurrency}
+            onOpenCopyTrading={onOpenCopyTrading}
+            onOpenAccountStats={onOpenAccountStats}
+            onOpenTradingTop={onOpenTradingTop}
+            onOpenWebApp={onOpenWebApp}
+          />
+        )}
       </div>{/* end chart-card__content-row */}
     </div>
   );
