@@ -6,7 +6,7 @@ import { useI18n } from '../i18n';
 import { TVChart } from './TVChart';
 import type { ChartHandle, TVStudyInfo } from './TVChart';
 import type { Currency } from '../api/currencies';
-import { getCategoryIcon, getCurrencyDisplayIcon, renderIcon } from '../utils/icons';
+import { getCurrencyDisplayIcon, renderIcon } from '../utils/icons';
 import { useAccountBonus } from '../hooks/useAccountBonus';
 import { resolveDisplayPayout } from '../utils/payout';
 import { TradingPanel } from './TradingPanel';
@@ -15,6 +15,8 @@ import { BetHistory } from './BetHistory';
 import type { BetterAccount } from '../api/better';
 import { betterSocket } from '../api/betterSocket';
 import type { PoAsset } from '../api/betterSocket';
+
+
 
 /** Currency-type categories that support OTC/Forex sub-filter */
 const CURRENCY_CATS = ['currency', 'currencies', 'forex'];
@@ -325,6 +327,24 @@ export function ChartGrid({
 
 /* ─── Individual chart card ─── */
 
+import CategoryIcon from '../assets/icons/category.svg?react';
+import CtyptoIcon from '../assets/icons/crypto.svg?react';
+import CurrencyIcon from '../assets/icons/currency.svg?react';
+import IndexsIcon from '../assets/icons/indexs.svg?react';
+import MaterialsIcon from '../assets/icons/materials.svg?react';
+import StockIcon from '../assets/icons/stock.svg?react';
+import StarIcon from '../assets/icons/star.svg?react';
+import SearchIcon from '../assets/icons/search.svg?react';
+
+const icons: Record<string, React.ReactNode> = {
+  "all": <CategoryIcon width={20} height={20} />,
+  "currency": <CurrencyIcon width={20} height={20} />,
+  "cryptocurrency": <CtyptoIcon width={20} height={20} />,
+  "index": <IndexsIcon width={20} height={20} />,
+  "commodity": <MaterialsIcon width={20} height={20} />,
+  "stock": <StockIcon width={20} height={20} />,
+}
+
 interface ChartCardProps {
   config: ChartConfig;
   index: number;
@@ -473,7 +493,7 @@ function ChartCard({
     () => (localStorage.getItem('ccp_otcFilter') as 'all' | 'otc' | 'forex') ?? 'all'
   );
   const [navBindings, setNavBindings] = useState<CurrencyNavBindings>(readCurrencyNavBindings);
-  const [copiedCurrency, setCopiedCurrency] = useState<string | null>(null);
+  // const [copiedCurrency, setCopiedCurrency] = useState<string | null>(null);
   const ccpListRef = useRef<HTMLDivElement>(null);
   const savedScrollRef = useRef(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -844,7 +864,7 @@ function ChartCard({
                       {currentDisplayPayout.toFixed(0)}%
                     </span>
                   )}
-                  <svg className="chart-card__chevron" width="10" height="6" viewBox="0 0 10 6" fill="currentColor">
+                  <svg className="chart-card__chevron" width="1em" height="1em" viewBox="0 0 10 6" fill="currentColor">
                     <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
                   </svg>
                 </button>
@@ -971,7 +991,7 @@ function ChartCard({
                     onClick={() => handleSetCat('all')}
                     title={t.all}
                   >
-                    <span className="ccp-catbar__icon">🌐</span>
+                    <span className="ccp-catbar__icon">{icons['all']}</span>
                     <span className="ccp-catbar__label">{t.all}</span>
                   </button>
                   {categories.map((cat) => (
@@ -981,7 +1001,7 @@ function ChartCard({
                       onClick={() => handleSetCat(cat.name)}
                       title={tCategory(cat.name)}
                     >
-                      <span className="ccp-catbar__icon">{renderIcon(getCategoryIcon(cat.name, cat.icon), 32)}</span>
+                      <span className="ccp-catbar__icon">{icons[cat.name] || icons['all'] }</span>
                       <span className="ccp-catbar__label">{tCategory(cat.name)}</span>
                     </button>
                   ))}
@@ -989,13 +1009,16 @@ function ChartCard({
                 {/* Right side: search + list */}
                 <div className="ccp-right">
                   <div className="ccp-search">
+
+                    <label className="ccp-search__input">
+                      <SearchIcon className="ccp-search__icon" />
                     <input
-                      className="ccp-search__input"
                       placeholder={t.search}
                       value={currencySearch}
                       onChange={(e) => setCurrencySearch(e.target.value)}
                       onClick={(e) => e.stopPropagation()}
                     />
+                    </label>
                     <input
                       className="ccp-search__profit"
                       inputMode="numeric"
@@ -1009,7 +1032,7 @@ function ChartCard({
                       className={`ccp-search__fav${selectedCat === 'favorites' ? ' ccp-search__fav--active' : ''}`}
                       onClick={() => handleSetCat(selectedCat === 'favorites' ? 'all' : 'favorites')}
                       title={t.favorites}
-                    >★</button>
+                    ><StarIcon /></button>
                   </div>
                   <div className="ccp-shortcuts" onClick={(e) => e.stopPropagation()}>
                     <div className="ccp-shortcuts__group">
@@ -1091,7 +1114,7 @@ function ChartCard({
                               onPointerDown={(e) => e.stopPropagation()}
                               onPointerUp={(e) => e.stopPropagation()}
                               onClick={(e) => { e.stopPropagation(); onToggleFavorite(c.currency); }}
-                            >{isFav ? '★' : '☆'}</button>
+                            ><StarIcon /></button>
                             <span className="ccp-item__icon">{renderIcon(getCurrencyDisplayIcon(c.category, c.icon, c.category_icon), 32)}</span>
                             <span className="ccp-item__name">{c.currency}</span>
                             {(() => {
@@ -1099,7 +1122,7 @@ function ChartCard({
                               if (payout === undefined) return null;
                               return <span className="ccp-item__profit">+{payout.toFixed(0)}%</span>;
                             })()}
-                            <button
+                            {/* <button
                               className={`ccp-item__copy${copiedCurrency === c.currency ? ' ccp-item__copy--done' : ''}`}
                               onPointerDown={(e) => e.stopPropagation()}
                               onPointerUp={(e) => e.stopPropagation()}
@@ -1113,7 +1136,7 @@ function ChartCard({
                                 setTimeout(() => setCopiedCurrency(null), 1500);
                               }}
                               title="Copy"
-                            >{copiedCurrency === c.currency ? '✓' : '⎘'}</button>
+                            >{copiedCurrency === c.currency ? '✓' : '⎘'}</button> */}
                           </div>
                         );
                       })
