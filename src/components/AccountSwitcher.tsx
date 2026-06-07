@@ -238,14 +238,18 @@ export function AccountSwitcher({
                 onClick={() => onToggleDemo(true)}
               >
                 <span className="account-switcher__mode-top"><span className="account-switcher__mode-letter account-switcher__mode-letter--demo">D</span>Demo</span>
-                <span className="account-switcher__mode-bal">$33425.99</span>
+                <span className="account-switcher__mode-bal">
+                  {currentBal ? `${currencySymbol(currentBal.currencies?.demo)}${currentBal.balances.demo.toFixed(2)}` : '—'}
+                </span>
               </button>
               <button
                 className={`account-switcher__mode-btn${!isDemo ? ' account-switcher__mode-btn--active' : ''}`}
                 onClick={() => onToggleDemo(false)}
               >
                 <span className="account-switcher__mode-top"><span className="account-switcher__mode-letter account-switcher__mode-letter--real">R</span> Real</span>
-                <span className="account-switcher__mode-bal">$33425.99</span>
+                <span className="account-switcher__mode-bal">
+                  {currentBal ? `${currencySymbol(currentBal.currencies?.real)}${currentBal.balances.real.toFixed(2)}` : '—'}
+                </span>
               </button>
               <button
                 type="button"
