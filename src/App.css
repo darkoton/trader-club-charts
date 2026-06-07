@@ -10764,11 +10764,11 @@
 }
 
 .ct-modal {
-  background: #1e2133;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
-  width: min(520px, 92vw);
+  backdrop-filter: blur(16px);
+  background: rgba(29, 29, 29, 0.32);
+  border: 1px solid rgba(43, 43, 43, 0.32);
+  border-radius: 10px;
+  width: min(412px, 92vw);
   max-height: 88vh;
   max-height: 88dvh;
   display: flex;
@@ -10803,11 +10803,12 @@
   max-width: 520px;
   max-height: 92vh;
   max-height: 92dvh;
-  background: #1e2133;
-  border-radius: 16px 16px 0 0;
+  backdrop-filter: blur(16px);
+  background: rgba(29, 29, 29, 0.32);
+  border: 1px solid rgba(43, 43, 43, 0.32);
+  border-radius: 10px 10px 0 0;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
 
@@ -10824,13 +10825,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px;
+  border-bottom: 1px solid rgba(43, 43, 43, 0.32);
   flex-shrink: 0;
 }
 .ct__title {
-  font-size: 15px;
-  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
   color: #fff;
   flex: 1;
   white-space: nowrap;
@@ -10850,24 +10852,25 @@
   color: #fff;
 }
 .ct__close {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(126, 139, 158, 0.08);
+  border-radius: 1000px;
+  backdrop-filter: blur(16px);
+  background: rgba(126, 139, 158, 0.08);
+  color: #c7c7c7;
+  font-size: 20px;
   padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
   transition: all 0.15s;
+  cursor: pointer;
 }
-.ct__close svg {
-  width: 12px;
-  height: 12px;
-}
+
 .ct__close:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(126, 139, 158, 0.2);
 }
 
 /* Body */
@@ -10904,7 +10907,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 16px;
+  padding: 12px 20px;
   cursor: pointer;
   transition: background 0.15s;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -10924,14 +10927,12 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(46, 189, 133, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
-  border: 2px solid transparent;
 }
 .ct__trader-avatar--level-1 {
   border-color: #a0a0a0;
@@ -10963,6 +10964,8 @@
 .ct__trader-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 .ct__trader-name-row {
   display: flex;
@@ -10971,7 +10974,7 @@
 }
 .ct__trader-name {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #fff;
   white-space: nowrap;
   overflow: hidden;
@@ -10980,16 +10983,17 @@
 .ct__trader-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 3px;
+  gap: 8px;
+  margin-top: 2px;
 }
 .ct__trader-subs {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  color: #6a6f7b;
 }
 .ct__trader-winrate {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .ct__trader-badge {
   display: inline-flex;
@@ -11003,8 +11007,8 @@
   margin-top: 4px;
 }
 .ct__trader-chevron {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 20px;
+  color: #808794;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
@@ -11033,6 +11037,12 @@
 .ct__level-badge--4 {
   background: rgba(231, 76, 60, 0.15);
   color: #e74c3c;
+}
+
+@media (max-width:600px){
+  .ct__header{
+    padding-top: 0px;
+  }
 }
 
 /* ═══════════════════════════════════════════
