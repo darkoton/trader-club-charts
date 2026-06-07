@@ -16,7 +16,11 @@ import type { BetterAccount } from '../api/better';
 import { betterSocket } from '../api/betterSocket';
 import type { PoAsset } from '../api/betterSocket';
 
-
+import CloseIcon from '../assets/icons/close.svg?react';
+import CheckIcon from '../assets/icons/check.svg?react';
+import ChartIcon from '../assets/icons/chart.svg?react';
+import SettingsIcon from '../assets/icons/settings.svg?react';
+import HealthIcon from '../assets/icons/health.svg?react';
 
 /** Currency-type categories that support OTC/Forex sub-filter */
 const CURRENCY_CATS = ['currency', 'currencies', 'forex'];
@@ -766,8 +770,8 @@ function ChartCard({
     && CURRENCY_CATS.includes(selectedCat.toLowerCase())
     && catsWithOtcMemo.has(selectedCat);
 
-  const activeIndicatorCount = Object.entries(config.activeIndicators)
-    .filter(([key, active]) => active && key in INDICATOR_REGISTRY).length;
+  // const activeIndicatorCount = Object.entries(config.activeIndicators)
+  //   .filter(([key, active]) => active && key in INDICATOR_REGISTRY).length;
 
   /* ─── Card class ─── */
   const cardClass = [
@@ -892,20 +896,23 @@ function ChartCard({
               {/* Indicator quick-toggle (toolbar-style) */}
               <div className="chart-card__indicator-wrap" ref={indicatorPanelRef}>
                 <button
-                  className={`chart-overlay__tool-btn${activeIndicatorCount > 0 ? ' chart-overlay__tool-btn--accent' : ''}`}
+                  className={`chart-overlay__tool-btn`}
                   onClick={() => setShowIndicatorPanel(!showIndicatorPanel)}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                  </svg>
-                  {activeIndicatorCount > 0 && (
+                  <HealthIcon/>
+                  {/* {activeIndicatorCount > 0 && (
                     <span className="chart-overlay__tool-badge">{activeIndicatorCount}</span>
-                  )}
+                  )} */}
                 </button>
                 {showIndicatorPanel && createPortal(
                   <div className="chart-card__indicator-panel-backdrop" onClick={() => setShowIndicatorPanel(false)}>
                     <div className="chart-card__indicator-panel" onClick={e => e.stopPropagation()}>
-                      <div className="chart-card__indicator-panel-title">{t.indicators}</div>
+                      <div className="chart-card__indicator-panel-header">
+                        <div className="chart-card__indicator-panel-title">{t.indicators}</div>
+                        <button type="button" className="chart-card__indicator-panel-close" onClick={() => setShowIndicatorPanel(false)}>
+                          <CloseIcon />
+                        </button>
+                      </div>
                       {Object.entries(INDICATOR_REGISTRY).map(([key, entry]) => {
                         const isActive = !!config.activeIndicators[key];
                         return (
@@ -916,12 +923,12 @@ function ChartCard({
                           >
                             <span
                               className="chart-card__ind-tag"
-                              style={{ background: isActive ? `${entry.color}33` : 'transparent', color: entry.color }}
+                              style={{ background: `${entry.color}33`, color: entry.color }}
                             >
                               {entry.tag}
                             </span>
                             <span className="chart-card__ind-name">{entry.meta.name}</span>
-                            <span className="chart-card__ind-check">{isActive ? '✓' : ''}</span>
+                            <span className="chart-card__ind-check">{isActive ? <CheckIcon /> : ''}</span>
                           </button>
                         );
                       })}
@@ -934,13 +941,13 @@ function ChartCard({
                             setTvStudySearch('');
                           }}
                         >
-                          📊 {t.tvIndicators}
+                          <ChartIcon/> {t.tvIndicators}
                         </button>
                         <button
                           className="chart-card__ind-settings-btn"
                           onClick={() => { setShowIndicatorPanel(false); onOpenSettings(config.id); }}
                         >
-                          ⚙ {t.settings}
+                          <SettingsIcon/> {t.settings}
                         </button>
                       </div>
                     </div>
