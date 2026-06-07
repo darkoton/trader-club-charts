@@ -23,6 +23,8 @@ import type { BetterAccount } from '../api/better';
 
 import CloseIcon from '../assets/icons/close.svg?react';
 import ArrowRightIcon from '../assets/icons/arrow-right.svg?react';
+import ArrowLeftIcon from '../assets/icons/arrow-left.svg?react';
+import YoutubeIcon from '../assets/icons/youtube.svg?react';
 
 /* ─── Proportion presets ─── */
 const PROPORTION_PRESETS = [
@@ -341,7 +343,7 @@ export function CopyTradingPanel({ open, onClose, isMobile, account }: CopyTradi
           <span className="ct__stats-k">{t.ctStatProfit}</span>
           <span
             className="ct__stats-v"
-            style={{ color: isFiniteNumber(stats.total_profit) && stats.total_profit >= 0 ? '#2ebd85' : '#f6465d' }}
+            style={{ color: isFiniteNumber(stats.total_profit) && stats.total_profit >= 0 ? '#80ffcc' : '#f27b7b' }}
           >
             {isFiniteNumber(stats.total_profit) && stats.total_profit > 0 ? '+' : ''}{formatMoney(stats.total_profit, cur)}
           </span>
@@ -356,7 +358,7 @@ export function CopyTradingPanel({ open, onClose, isMobile, account }: CopyTradi
         </li>
         <li className="ct__stats-item">
           <span className="ct__stats-k">{t.ctStatMaxProfit}</span>
-          <span className="ct__stats-v" style={{ color: '#2ebd85' }}>
+          <span className="ct__stats-v" style={{ color: '#80ffcc' }}>
             {formatMoney(stats.max_profit, cur)}
           </span>
         </li>
@@ -372,6 +374,9 @@ export function CopyTradingPanel({ open, onClose, isMobile, account }: CopyTradi
     const ai = selectedTrader.account_info;
     const level = ai?.user_level ?? 0;
     const cur = ai?.currency ?? 'USD';
+    const winPct = selectedTrader.stats_today?.profitable_trades_pct;
+
+    const hasWinPct = isFiniteNumber(winPct);
 
     return (
       <div className="ct__detail">
@@ -396,11 +401,20 @@ export function CopyTradingPanel({ open, onClose, isMobile, account }: CopyTradi
             <div className="ct__profile-name">{selectedTrader.name}</div>
             <div className="ct__profile-counters">
               <span>{selectedTrader.subscriber_count} {t.ctFollowers}</span>
-            </div>
-            {selectedTrader.description && (
-              <div className="ct__profile-desc">{selectedTrader.description}</div>
+
+            {hasWinPct && (
+                  <span className="ct_profile-winrate" style={{ color: winPct >= 50 ? '#80ffcc' : '#f27b7b' }}>
+                    {formatPercent(winPct)}
+                  </span>
             )}
+            </div>
+      
+            {/* {selectedTrader.description && (
+              <div className="ct__profile-desc">{selectedTrader.description}</div>
+            )} */}
           </div>
+
+          <a href='#' target='_blank' className="ct__profile-channel"><YoutubeIcon/></a>
         </div>
 
         {/* ─── Trading stats tabs ─── */}
@@ -594,14 +608,15 @@ export function CopyTradingPanel({ open, onClose, isMobile, account }: CopyTradi
   const panelContent = (
     <div className="ct" ref={panelRef}>
       <div className="ct__header">
-        {(selectedTrader || showForm) && (
-          <button type="button" className="ct__back" onClick={handleBack}>
-            ‹
-          </button>
-        )}
         <span className="ct__title">
           {showForm ? t.ctCopySettings : selectedTrader ? selectedTrader.name : t.ctTitle}
         </span>
+
+                {(selectedTrader || showForm) && (
+          <button type="button" className="ct__back" onClick={handleBack}>
+            <ArrowLeftIcon />
+          </button>
+        )}
         <button type="button" className="ct__close" onClick={onClose}>
           <CloseIcon/>
         </button>

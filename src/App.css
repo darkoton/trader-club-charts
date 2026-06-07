@@ -10840,17 +10840,33 @@
   text-overflow: ellipsis;
 }
 .ct__back {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
   cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #C7C7C7;
+  backdrop-filter: blur(16px);
+  background: rgba(126, 139, 158, 0.08);
+  border: 1px solid rgba(126, 139, 158, 0.08);
+  border-radius: 50%;
 }
-.ct__back:hover {
-  color: #fff;
+
+
+@media (any-hover:hover){
+  .ct__back:hover {
+    border: 1px solid rgba(126, 139, 158, 0.24);
+    background: rgba(126, 139, 158, 0.24);
+  }
 }
+
+.ct__back:active {
+  border: 1px solid rgba(126, 139, 158, 0.48);
+  background: rgba(126, 139, 158, 0.48);
+}
+
 .ct__close {
   width: 44px;
   height: 44px;
@@ -10868,9 +10884,16 @@
   cursor: pointer;
 }
 
-.ct__close:hover {
-  color: #fff;
-  background: rgba(126, 139, 158, 0.2);
+@media (any-hover:hover){
+  .ct__close:hover {
+    border: 1px solid rgba(126, 139, 158, 0.24);
+    background: rgba(126, 139, 158, 0.24);
+  }
+}
+
+.ct__close:active {
+  border: 1px solid rgba(126, 139, 158, 0.48);
+  background: rgba(126, 139, 158, 0.48);
 }
 
 /* Body */
@@ -11058,23 +11081,24 @@
 /* ─── Profile block ─── */
 .ct__profile {
   display: flex;
-  gap: 16px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.03);
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(39, 39, 39, 0.32);
   border-radius: 12px;
 }
 .ct__profile-avatar {
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
-  background: rgba(46, 189, 133, 0.12);
+  /* background: rgba(46, 189, 133, 0.12); */
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
-  border: 3px solid transparent;
+  /* border: 3px solid transparent; */
 }
 .ct__profile-avatar--level-1 {
   border-color: #a0a0a0;
@@ -11106,11 +11130,12 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .ct__profile-name {
-  font-size: 17px;
-  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
   color: #fff;
 }
 .ct__profile-row {
@@ -11128,10 +11153,17 @@
 }
 .ct__profile-counters {
   display: flex;
-  gap: 14px;
-  margin-top: 4px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 500;
+  color: #6a6f7b;
+  gap: 8px;
+}
+.ct_profile-winrate{
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 133%;
+  color: #f27b7b;
 }
 .ct__profile-desc {
   font-size: 12px;
@@ -11139,48 +11171,56 @@
   margin-top: 4px;
   line-height: 1.4;
 }
+.ct__profile-channel{
+  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* ─── Stats tabs ─── */
 .ct__tabs {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(39, 39, 39, 0.32);
   border-radius: 12px;
   overflow: hidden;
 }
 .ct__tabs-nav {
   display: flex;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid #4f545b;
 }
 .ct__tabs-btn {
   flex: 1;
   padding: 10px 8px;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-  font-weight: 600;
+  color: #4f545b; 
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
   position: relative;
+  font-family: "Montserrat", sans-serif;
 }
 .ct__tabs-btn:hover {
-  color: rgba(255, 255, 255, 0.7);
+  color: #80b2ff;
 }
 .ct__tabs-btn--active {
-  color: #2ebd85;
+  color: #80b2ff;
 }
 .ct__tabs-btn--active::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 20%;
-  right: 20%;
-  height: 2px;
-  background: #2ebd85;
-  border-radius: 2px 2px 0 0;
+  left: 0%;
+  right: 0%;
+  height: 1px;
+  background: #80b2ff;
 }
-.ct__tabs-body {
+/* .ct__tabs-body {
   padding: 4px 0;
-}
+} */
 
 /* Stats list (like trading-info) */
 .ct__stats-list {
@@ -11192,20 +11232,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 9px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-bottom: 1px solid #1c1d1d;
 }
 .ct__stats-item:last-child {
   border-bottom: none;
 }
 .ct__stats-k {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  color: #6a6f7b;
+  font-family: "Montserrat", sans-serif;
 }
 .ct__stats-v {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: #fff;
+  font-family: "Montserrat", sans-serif;
 }
 .ct__stats-empty {
   padding: 24px 16px;
@@ -11223,13 +11266,11 @@
 /* ─── Account info row ─── */
 .ct__account-info {
   display: flex;
-  gap: 16px;
+  gap: 19.5px;
   flex-wrap: wrap;
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 10px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+  color: #585b62;
 }
 
 /* ═══════════════════════════════════════════
@@ -11351,8 +11392,8 @@
   margin-top: 4px;
 }
 .ct__btn {
-  padding: 11px 20px;
-  border-radius: 8px;
+  padding: 15px 20px;
+  border-radius: 12px;
   border: none;
   font-size: 14px;
   font-weight: 600;
@@ -11370,11 +11411,14 @@
   flex: 1 1 100%;
 }
 .ct__btn--primary {
-  background: #2ebd85;
-  color: #fff;
+  background: #80b2ff;
+  color: #1d3c6c;
 }
 .ct__btn--primary:hover:not(:disabled) {
-  background: #26a574;
+  background: #c2daff;
+}
+.ct__btn--primary:active{
+  background: linear-gradient(180deg, #c2daff 0%, #80b2ff 100%);
 }
 .ct__btn--danger {
   background: rgba(246, 70, 93, 0.12);
@@ -12527,17 +12571,17 @@
     max-height: 92vh;
     max-height: 92dvh;
   }
-  .ct__profile {
+  /* .ct__profile {
     flex-direction: column;
     align-items: center;
     text-align: center;
-  }
+  } */
   .ct__profile-row {
     justify-content: center;
   }
-  .ct__profile-counters {
+  /* .ct__profile-counters {
     justify-content: center;
-  }
+  } */
   .ct__actions {
     flex-direction: column;
   }
