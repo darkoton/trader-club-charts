@@ -8225,7 +8225,7 @@
 
 /* Shared picker container */
 .tp-picker {
-  background: #1e2133;
+  /* background: #1e2133; */
   border-radius: 10px;
   overflow: hidden;
 }
@@ -8275,26 +8275,33 @@
 }
 .tp-desk-popup {
   position: fixed;
-  width: 240px;
-  background: #1e2133;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  width: 372px;
+  backdrop-filter: blur(32px);
+  background: rgba(29, 29, 29, 0.32);
+  opacity: 0.8;
+  border: 1px solid rgba(43, 43, 43, 0.32);
+  border-radius: 20px;
+  /* box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); */
   overflow-y: auto;
   z-index: 9001;
+  padding: 16px;
 }
 .tp-desk-popup__title {
-  padding: 10px 14px 2px;
-  font-size: 11px;
+  font-size: 18px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--white);
   font-weight: 600;
   letter-spacing: 0.5px;
+  display: none;
 }
 .tp-desk-popup .tp-picker {
   border: none;
   box-shadow: none;
   border-radius: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* Inside portals (mobile bottom sheets): just fill width */
@@ -8531,24 +8538,23 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 12px 8px;
 }
 .tp-picker__amt-field {
   flex: 1;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 0 12px;
+  background: rgba(60, 71, 88, 0.16);
+  border: 1px solid rgba(83, 95, 113, 0.16);
+  border-radius: 12px;
+  padding: 0 16px;
   min-width: 0;
   overflow: hidden;
 }
 .tp-picker__amt-dollar {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 18px;
-  font-weight: 700;
-  font-family: "SF Mono", "Fira Code", monospace;
+  color: #748092;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Montserrat", sans-serif;
   flex-shrink: 0;
   max-width: 48px;
   overflow: hidden;
@@ -8561,10 +8567,10 @@
   border: none;
   outline: none;
   color: #fff;
-  font-size: 18px;
-  font-weight: 700;
-  font-family: "SF Mono", "Fira Code", monospace;
-  padding: 8px 4px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  padding: 14px 12px;
   min-width: 0;
   width: 100%;
 }
@@ -8573,7 +8579,6 @@
 }
 .tp-picker__multiply {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 4px;
 }
@@ -8582,39 +8587,41 @@
   gap: 4px;
 }
 .tp-picker__multiply-btn {
-  width: 30px;
-  height: 30px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: none;
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.6);
+  background: rgba(56, 64, 76, 0.56);
+  border: 1px solid rgba(56, 64, 76, 0.56);
+  border-radius: 12px;
+  color: #d9d9d9;
   cursor: pointer;
   transition: all 0.15s;
+  font-size: 20px;
 }
 .tp-picker__multiply-btn:hover {
-  background: rgba(46, 189, 133, 0.15);
-  color: #2ebd85;
+  background: rgba(128, 178, 255, 0.08);
+  color: #80b2ff;
 }
 .tp-picker__multiply-btn:active {
-  background: rgba(46, 189, 133, 0.25);
-  color: #2ebd85;
+  background: rgba(128, 178, 255, 0.08);
+  color: #80b2ff;
 }
 .tp-picker__multiply-input {
-  width: 48px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 5px;
+  width: 64px;
+  height: 48px;
+  background: rgba(60, 71, 88, 0.16);
+  border: 1px solid rgba(83, 95, 113, 0.16);
+  border-radius: 12px;
   color: #fff;
   font-size: 12px;
   font-weight: 600;
-  text-align: center;
+  text-align: left;
   outline: none;
   appearance: textfield;
   -moz-appearance: textfield;
+  padding: 14px 16px;
 }
 .tp-picker__multiply-input::-webkit-outer-spin-button,
 .tp-picker__multiply-input::-webkit-inner-spin-button {
@@ -8627,19 +8634,20 @@
 .tp-picker__numpad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 4px 12px;
+  gap: 8px;
 }
 .tp-picker__key {
-  height: 40px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 18px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  background: rgba(56, 64, 76, 0.56);
+  border: 1px solid rgba(56, 64, 76, 0.56);
+  border-radius: 12px;
+  color: var(--white);
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.12s;
@@ -8650,33 +8658,47 @@
   background: rgba(255, 255, 255, 0.1);
 }
 .tp-picker__key:active {
-  background: rgba(46, 189, 133, 0.2);
-  color: #2ebd85;
+  background: rgba(128, 178, 255, 0.16);
+  color: #80b2ff;
   transform: scale(0.95);
 }
 .tp-picker__key--back {
-  color: rgba(255, 255, 255, 0.55);
+  font-size: 20px;
+  color: var(--white);
 }
 .tp-picker__key--back:hover {
   color: #f6465d;
+}
+
+@media (max-width: 600px) {
+  .tp-picker__amt-top,
+  .tp-picker__numpad,
+  .tp-picker__amt-presets,
+  .tp-picker__quick-mults {
+    padding: 8px 16px;
+  }
+
+  .tp-picker__key {
+    height: 44px;
+  }
 }
 
 /* ─── Amount picker: amount presets ─── */
 .tp-picker__amt-presets {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 4px;
-  padding: 8px 12px 12px;
+  gap: 8px;
 }
 .tp-picker__amt-preset {
   min-width: 0;
-  padding: 6px 2px;
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 11px;
-  font-weight: 600;
+  padding: 10px 2px;
+  backdrop-filter: blur(16px);
+  background: rgba(56, 64, 76, 0.56);
+  border: 1px solid rgba(56, 64, 76, 0.56);
+  border-radius: 12px;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   text-align: center;
   transition: all 0.15s;
@@ -8685,59 +8707,60 @@
   white-space: nowrap;
 }
 .tp-picker__amt-preset--minmax {
-  background: rgba(46, 189, 133, 0.08);
-  color: rgba(46, 189, 133, 0.8);
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  border: 1px solid rgba(128, 178, 255, 0.16);
+  background: rgba(128, 178, 255, 0.16);
+  color: #80b2ff;
+  font-weight: 500;
 }
 .tp-picker__amt-preset:hover {
-  background: rgba(46, 189, 133, 0.12);
-  color: #2ebd85;
+  border: 1px solid rgba(128, 178, 255, 0.16);
+  background: rgba(128, 178, 255, 0.16);
+  color: #80b2ff;
 }
 .tp-picker__amt-preset--active {
-  background: rgba(46, 189, 133, 0.2);
-  color: #2ebd85;
+  border: 1px solid rgba(128, 178, 255, 0.16);
+  background: rgba(128, 178, 255, 0.16);
+  color: #80b2ff;
 }
 
 /* ─── Quick multiplier presets — editable fields inside calculator popup ─── */
 .tp-picker__quick-mults {
   display: flex;
-  gap: 6px;
-  padding: 0 12px 10px;
+  gap: 4px;
 }
 .tp-picker__quick-mult-edit {
   flex: 1;
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  padding: 0 4px;
+  justify-content: center;
+  background: rgba(56, 64, 76, 0.56);
+  border: 1px solid rgba(56, 64, 76, 0.56);
+  border-radius: 12px;
 }
 .tp-picker__quick-mult-label {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 12px;
-  font-weight: 700;
-  font-family: "SF Mono", "Fira Code", monospace;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Montserrat", sans-serif;
   user-select: none;
 }
 .tp-picker__quick-mult-input {
-  flex: 1;
-  padding: 5px 2px;
+  /* flex: 1; */
+  padding: 10px 2px;
   background: transparent;
   border: none;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  text-align: center;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
   outline: none;
-  font-family: "SF Mono", "Fira Code", monospace;
-  width: 100%;
+  font-family: "Montserrat", sans-serif;
+  width: 30%;
   min-width: 0;
 }
 .tp-picker__quick-mult-edit:focus-within {
-  border-color: rgba(46, 189, 133, 0.5);
-  background: rgba(46, 189, 133, 0.06);
+  border-color: rgba(128, 178, 255, 0.16);
+  background: rgba(128, 178, 255, 0.16);
 }
 
 /* ─── Quick multiplier buttons — in the betting panel ─── */
@@ -9618,17 +9641,46 @@
 .tp-amt-portal__sheet {
   width: 100%;
   max-width: 400px;
-  background: #1e2133;
-  border-radius: 16px 16px 0 0;
-  padding: 8px 12px 24px;
+  backdrop-filter: blur(32px);
+  background: rgba(29, 29, 29, 0.32);
+  opacity: 0.8;
+  border: 1px solid rgba(43, 43, 43, 0.32);
+  border-radius: 20px 20px 0 0;
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
 }
+
+.tp-amt-portal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  padding-top: 0;
+}
+
 .tp-amt-portal__title {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-  padding: 6px 0 10px;
+  color: var(--white);
+  text-align: left;
+}
+
+.tp-amt-portal__close-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(126, 139, 158, 0.08);
+  border-radius: 32px;
+  width: 44px;
+  height: 44px;
+  color: #c7c7c7;
+  font-size: 20px;
+  backdrop-filter: blur(16px);
+  background: rgba(126, 139, 158, 0.08);
+  line-height: 1;
+}
+
+.tp-amt-portal__close-btn:active {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* History portal (mobile) */

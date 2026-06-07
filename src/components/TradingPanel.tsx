@@ -21,6 +21,10 @@ import { socketService } from '../api/socket';
 import { useI18n } from '../i18n';
 import { CopyTradingIcon } from '../utils/icons';
 
+import MultiplyIcon from '../assets/icons/multiply.svg?react';
+import DivideIcon from '../assets/icons/divide.svg?react';
+import DeleteIcon from '../assets/icons/delete.svg?react';
+
 /** Map ISO currency code to its symbol. Fallback: code + space. */
 function currencySymbol(code?: string): string {
   if (!code) return '$';
@@ -1127,10 +1131,10 @@ function AmountPicker({
         <div className="tp-picker__multiply">
           <div className="tp-picker__multiply-btns">
             <button type="button" className="tp-picker__multiply-btn" onClick={handleMultiply} title="×">
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M4.975 0C5.497 0 5.906.449 5.858.968L5.545 4.363 8.741 3.396C9.258 3.24 9.794 3.581 9.87 4.116C9.941 4.611 9.588 5.066 9.09 5.119L6 5.451 7.991 8.204C8.307 8.641 8.174 9.255 7.706 9.522 7.252 9.781 6.673 9.603 6.443 9.133L4.952 6.088 3.603 9.092C3.384 9.581 2.794 9.779 2.324 9.52 1.842 9.255 1.7 8.629 2.021 8.182L3.979 5.451.919 5.121C.418 5.067.064 4.606.141 4.108.223 3.576.758 3.241 1.273 3.399L4.413 4.363 4.092.97C4.043.45 4.452 0 4.975 0Z" fill="currentColor"/></svg>
+              <MultiplyIcon />
             </button>
             <button type="button" className="tp-picker__multiply-btn" onClick={handleDivide} title="÷">
-              <svg width="10" height="11" viewBox="0 0 10 11" fill="none"><path d="M6 1.5C6 2.052 5.552 2.5 5 2.5 4.448 2.5 4 2.052 4 1.5 4 .948 4.448.5 5 .5 5.552.5 6 .948 6 1.5Z" fill="currentColor"/><path d="M6 9.5C6 10.052 5.552 10.5 5 10.5 4.448 10.5 4 10.052 4 9.5 4 8.948 4.448 8.5 5 8.5 5.552 8.5 6 8.948 6 9.5Z" fill="currentColor"/><path d="M0 5.5C0 4.948.448 4.5 1 4.5H9C9.552 4.5 10 4.948 10 5.5 10 6.052 9.552 6.5 9 6.5H1C.448 6.5 0 6.052 0 5.5Z" fill="currentColor"/></svg>
+              <DivideIcon />
             </button>
           </div>
           <input
@@ -1171,7 +1175,7 @@ function AmountPicker({
             onClick={() => handleNumpad(key)}
           >
             {key === '⌫' ? (
-              <svg width="18" height="13" viewBox="0 0 20 14" fill="none"><path d="M17.71 13.28H6.59C5.98 13.28 5.39 13.03 4.96 12.6L.66 8.25C-.22 7.36-.22 5.92.66 5.03L4.96.68C5.39.25 5.98 0 6.59 0H17.71C18.97 0 20 1.03 20 2.29V10.99C20 12.25 18.97 13.28 17.71 13.28ZM6.59 1.09C6.27 1.09 5.96 1.22 5.74 1.45L1.43 5.8C.97 6.27.97 7.02 1.43 7.49L5.74 11.84C5.96 12.07 6.28 12.2 6.59 12.2H17.71C18.37 12.2 18.91 11.66 18.91 11V2.29C18.91 1.63 18.37 1.09 17.71 1.09H6.59Z" fill="currentColor"/><path d="M10.45 9.21C10.31 9.21 10.17 9.16 10.07 9.05 9.86 8.83 9.86 8.49 10.07 8.28L14.12 4.23C14.33 4.01 14.68 4.01 14.89 4.23 15.11 4.44 15.11 4.78 14.89 5L10.84 9.05C10.73 9.16 10.59 9.21 10.45 9.21Z" fill="currentColor"/><path d="M14.5 9.21C14.36 9.21 14.22 9.16 14.12 9.05L10.07 5C9.86 4.78 9.86 4.44 10.07 4.23 10.28 4.01 10.63 4.01 10.84 4.23L14.89 8.28C15.11 8.49 15.11 8.83 14.89 9.05 14.78 9.16 14.64 9.21 14.5 9.21Z" fill="currentColor"/></svg>
+              <DeleteIcon />
             ) : key}
           </button>
         ))}
@@ -1205,7 +1209,7 @@ function AmountPicker({
       <div className="tp-picker__quick-mults">
         {quickMults.map((mult, idx) => (
           <div key={idx} className="tp-picker__quick-mult-edit">
-            <span className="tp-picker__quick-mult-label">×</span>
+            <span className="tp-picker__quick-mult-label">x</span>
             <input
               className="tp-picker__quick-mult-input"
               type="text"
@@ -2917,7 +2921,11 @@ export function TradingPanel({ asset, apiName, account, isDemo, payout = 0, isMo
           <div className="tp-amt-portal" onClick={() => setShowAmountPicker(false)}>
             <div className="tp-amt-portal__sheet" onClick={(e) => e.stopPropagation()}>
               <div className="portal-sheet__handle" />
-              <div className="tp-amt-portal__title">{t.betAmount}</div>
+              <div className="tp-amt-portal__head">
+               <div className="tp-amt-portal__title">{t.betAmount}</div>
+               <button className="tp-amt-portal__close-btn" onClick={() => setShowAmountPicker(false)}>✕</button>
+              </div>
+         
               <AmountPicker
                 amount={safeAmount}
                 maxAmount={pickerMaxAmount}
