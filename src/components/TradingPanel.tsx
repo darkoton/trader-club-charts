@@ -24,6 +24,9 @@ import { CopyTradingIcon } from '../utils/icons';
 import MultiplyIcon from '../assets/icons/multiply.svg?react';
 import DivideIcon from '../assets/icons/divide.svg?react';
 import DeleteIcon from '../assets/icons/delete.svg?react';
+import ArrowUpIcon from '../assets/icons/arrow-up.svg?react';
+import ArrowDownIcon from '../assets/icons/arrow-down.svg?react';
+import RefreshIcon from '../assets/icons/refresh.svg?react';
 
 /** Map ISO currency code to its symbol. Fallback: code + space. */
 function currencySymbol(code?: string): string {
@@ -2662,7 +2665,7 @@ export function TradingPanel({ asset, apiName, account, isDemo, payout = 0, isMo
         <div className="tp-hist__row2">
           <div className="tp-hist__row2-left">
             <span className={`tp-hist__dir${bet.direction === 'call' ? ' tp-hist__dir--up' : ' tp-hist__dir--down'}`}>
-              {bet.direction === 'call' ? '↑' : '↓'}
+              {bet.direction === 'call' ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </span>
             <span className="tp-hist__amount">{bsym}{fmtMoney(bet.amount)}</span>
           </div>
@@ -2726,7 +2729,7 @@ export function TradingPanel({ asset, apiName, account, isDemo, payout = 0, isMo
         {historyLoading && <div className="tp-hist__loading">{t.betHistoryLoading}</div>}
         {!historyLoading && filteredHistory.length === 0 && <div className="tp-hist__empty">{t.betHistoryEmpty}</div>}
         {!historyLoading && groupedHistory.map((g) => (
-          <div key={g.date}>
+          <div className="tp-hist__group" key={g.date}>
             <div className="tp-hist__date-label">{g.date}</div>
             {g.bets.map(renderHistoryItem)}
           </div>
@@ -3137,7 +3140,7 @@ export function TradingPanel({ asset, apiName, account, isDemo, payout = 0, isMo
             <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
 
               <button type="button" className="tp__d-hist-refresh" onClick={loadHistory} title="↻">
-                ↻
+                <RefreshIcon/>
               </button>
             </div>
           </div>
