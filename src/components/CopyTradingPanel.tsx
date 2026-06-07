@@ -504,7 +504,7 @@ export function CopyTradingPanel({ open, onClose, isMobile, account }: CopyTradi
 
     return (
       <div className="ct__form">
-        <h3 className="ct__form-title">{t.ctCopySettings}</h3>
+        {/* <h3 className="ct__form-title">{t.ctCopySettings}</h3> */}
 
         {/* Proportion */}
         <div className="ct__field">
