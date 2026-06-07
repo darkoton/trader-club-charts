@@ -913,25 +913,27 @@ function ChartCard({
                           <CloseIcon />
                         </button>
                       </div>
-                      {Object.entries(INDICATOR_REGISTRY).map(([key, entry]) => {
-                        const isActive = !!config.activeIndicators[key];
-                        return (
-                          <button
-                            key={key}
-                            className={`chart-card__ind-toggle${isActive ? ' chart-card__ind-toggle--active' : ''}`}
-                            onClick={() => toggleIndicator(key)}
-                          >
-                            <span
-                              className="chart-card__ind-tag"
-                              style={{ background: `${entry.color}33`, color: entry.color }}
+                      <div className="chart-card__indicator-panel-list">
+                        {Object.entries(INDICATOR_REGISTRY).map(([key, entry]) => {
+                          const isActive = !!config.activeIndicators[key];
+                          return (
+                            <button
+                              key={key}
+                              className={`chart-card__ind-toggle${isActive ? ' chart-card__ind-toggle--active' : ''}`}
+                              onClick={() => toggleIndicator(key)}
                             >
-                              {entry.tag}
-                            </span>
-                            <span className="chart-card__ind-name">{entry.meta.name}</span>
-                            <span className="chart-card__ind-check">{isActive ? <CheckIcon /> : ''}</span>
-                          </button>
-                        );
-                      })}
+                              <span
+                                className="chart-card__ind-tag"
+                                style={{ background: `${entry.color}33`, color: entry.color }}
+                              >
+                                {entry.tag}
+                              </span>
+                              <span className="chart-card__ind-name">{entry.meta.name}</span>
+                              <span className="chart-card__ind-check">{isActive ? <CheckIcon /> : ''}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
                       <div className="chart-card__ind-panel-footer">
                         <button
                           className="chart-card__ind-settings-btn"

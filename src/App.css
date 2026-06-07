@@ -2151,13 +2151,6 @@
   line-height: 1;
 }
 
-/* Mobile: hide indicator label, show icon + badge only */
-@media (max-width: 600px) {
-  .chart-overlay__tool-label {
-    display: none;
-  }
-}
-
 .chart-card__indicator-panel-backdrop {
   position: fixed;
   top: 0;
@@ -2181,6 +2174,23 @@
     max-height: 60vh;
   }
 }
+
+/* Mobile: hide indicator label, show icon + badge only */
+@media (max-width: 600px) {
+  .chart-card__indicator-panel{
+    border-radius: 10px 10px 0 0 !important;
+  }
+
+  .chart-card__indicator-panel-list{
+      max-height: 268px;
+
+  }
+
+  .chart-overlay__tool-label {
+    display: none;
+  }
+}
+
 
 /* ─── Portal bottom-sheet shared styles ─── */
 .portal-sheet__handle {
@@ -2411,6 +2421,10 @@
   width: 16px;
   text-align: center;
   flex-shrink: 0;
+}
+
+.chart-card__indicator-panel-list{
+  overflow-y: auto;
 }
 
 .chart-card__ind-panel-footer {
